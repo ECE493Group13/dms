@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_smorest import Api
 
 from api.config import OpenAPIConfig
@@ -10,6 +11,7 @@ app.config["API_TITLE"] = "DMS API"
 app.config["API_VERSION"] = "0.0.1"
 app.config.from_object(OpenAPIConfig)
 
+CORS(app)
 
 api = Api(app)
 
