@@ -6,6 +6,10 @@ serve:
 openapi:
 	flask openapi write openapi.json
 
+.phony: test
+test:
+	pytest tests
+
 .phony: setup
 setup:
 	python -m venv venv
