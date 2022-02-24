@@ -1,3 +1,5 @@
+include db/rules.mk
+
 .phony: serve
 serve:
 	FLASK_ENV=development flask run --port 8080
