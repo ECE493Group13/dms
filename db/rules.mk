@@ -6,7 +6,7 @@ DB_URL=postgres://postgres:$(PASSWORD)@localhost:$(PORT)/postgres
 
 db-start:
 	sudo docker run \
-		--publish $(PORT):5432 \
+		--publish 127.0.0.1:$(PORT):5432 \
 		--volume $(DATA_MOUNT):/var/lib/postgresql/data \
 		--name $(CONTAINER_NAME) \
 		--env POSTGRES_PASSWORD=$(PASSWORD) \
