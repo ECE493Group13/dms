@@ -1,6 +1,7 @@
 .vscode/
 openapi.json
 db/data
+db/secrets.mk
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

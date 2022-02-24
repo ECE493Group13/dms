@@ -1,5 +1,6 @@
+include db/secrets.mk
+
 CONTAINER_NAME=postgres
-PASSWORD=F49opCuTNMb4hdxmhVGg_ZypnjU
 PORT=5433
 DATA_MOUNT=$(shell pwd)/db/data/
 DB_URL=postgres://postgres:$(PASSWORD)@localhost:$(PORT)/postgres
