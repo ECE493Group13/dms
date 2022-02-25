@@ -1,6 +1,8 @@
+include db/secrets.mk
+
 .phony: serve
 serve:
-	FLASK_ENV=development flask run --port 8080
+	DB_PASSWORD=$(PASSWORD) FLASK_ENV=development flask run --port 8080
 
 .phony: openapi
 openapi:

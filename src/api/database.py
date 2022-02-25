@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Text, Integer, Float, DateTime
 
 db = SQLAlchemy()
 
@@ -7,13 +8,10 @@ class KeywordsModel(db.Model):
     __table_args__ = {"schema": "docs"}
     __tablename__ = "doc_keywords_0"
 
-    dkey = db.Column(db.Text, primary_key=True)
-    keywords = db.Column(db.Text)
-    keywords_lc = db.Column(db.Text)
-    keyword_tokens = db.Column(db.Integer)
-    keyword_score = db.Column(db.Float)
-    doc_count = db.Column(db.Integer)
-    insert_date = db.Column(db.DateTime)
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    dkey = Column(Text, primary_key=True)
+    keywords = Column(Text)
+    keywords_lc = Column(Text)
+    keyword_tokens = Column(Integer)
+    keyword_score = Column(Float)
+    doc_count = Column(Integer)
+    insert_date = Column(DateTime)

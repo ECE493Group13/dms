@@ -3,39 +3,34 @@ from http import HTTPStatus
 from flask.views import MethodView
 from flask_smorest import Blueprint
 from marshmallow import Schema, fields
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from api.database import KeywordsModel
 
-blueprint = Blueprint("filterpaper", "filterpaper", url_prefix="/filter")
+blueprint = Blueprint("filterpaper", "filterpaper", url_prefix="/filterpaper")
 
 
-class KeywordsTable(Schema):
-    dkey = fields.String()
-    keywords = fields.String()
-    keywords_lc = fields.String()
-    keyword_tokens = fields.Integer()
-    keyword_score = fields.Float()
-    doc_count = fields.Integer()
-    insert_date = fields.Date()
+class KeywordsSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = KeywordsModel
 
 
 class FilterPaperQueryArgsSchema(Schema):
-    keywords = fields.List(fields.String())
+    keywords = fields.List(fields.Str())
 
 
 class FilterPaperResultSchema(Schema):
-    success = fields.Boolean()
-    result = fields.List(fields.Nested(KeywordsTable))
+    result = fields.List(fields.Nested(KeywordsSchema))
 
 
 @blueprint.route("")
 class FilterPaper(MethodView):
     @blueprint.arguments(FilterPaperQueryArgsSchema, location="json")
-    @blueprint.response(HTTPStatus.OK, FilterPaperResultSchema)
+    @blueprint.response(HTTPStatus.OK, KeywordsSchema(many=True))
     def post(self, args: dict):
         keywords: str = args["keywords"]
-        keywords = [i.lower() for i in keywords]
+        keywords = [keyword.lower() for keyword in keywords]
         result = KeywordsModel.query.filter(
             KeywordsModel.keywords_lc.in_(keywords)
         ).all()
-        return {"success": True, "result": result}
+        return result
