@@ -1,13 +1,10 @@
-from ast import keyword
 from http import HTTPStatus
-from sre_constants import SUCCESS
-
-from flask.views import MethodView
-from flask_smorest import Blueprint, abort
-from marshmallow import Schema, fields
 
 from api.database import KeywordsModel
 
+from flask.views import MethodView
+from flask_smorest import Blueprint
+from marshmallow import Schema, fields
 
 blueprint = Blueprint("filterpaper", "filterpaper", url_prefix="/filter")
 
@@ -21,7 +18,7 @@ class KeywordsTable(Schema):
     insert_date = fields.Date()
 
 class FilterPaperQueryArgsSchema(Schema):
-    keywords = fields.String()
+    keywords = fields.List(fields.String())
 
 class FilterPaperResultSchema(Schema):
     success = fields.Boolean()
@@ -34,9 +31,10 @@ class FilterPaper(MethodView):
     @blueprint.response(HTTPStatus.OK, FilterPaperResultSchema)
     def post(self, args: dict):
         keywords: str = args["keywords"]
-        keywords = [i.lower().strip() for i in keywords.split(',')]
-        result = KeywordsModel.query.filter(KeywordsModel.keywords_lc.in_(keywords)).all()
+        keywords = [i.lower() for i in keywords]
+        result = KeywordsModel.query \
+            .filter(KeywordsModel.keywords_lc.in_(keywords)).all()
         return {
             "success": True,
-            "result": result 
+            "result": result
         }
