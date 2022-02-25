@@ -1,12 +1,13 @@
 from http import HTTPStatus
 
-from api.database import KeywordsModel
-
 from flask.views import MethodView
 from flask_smorest import Blueprint
 from marshmallow import Schema, fields
 
+from api.database import KeywordsModel
+
 blueprint = Blueprint("filterpaper", "filterpaper", url_prefix="/filter")
+
 
 class KeywordsTable(Schema):
     dkey = fields.String()
@@ -17,8 +18,10 @@ class KeywordsTable(Schema):
     doc_count = fields.Integer()
     insert_date = fields.Date()
 
+
 class FilterPaperQueryArgsSchema(Schema):
     keywords = fields.List(fields.String())
+
 
 class FilterPaperResultSchema(Schema):
     success = fields.Boolean()
@@ -32,9 +35,7 @@ class FilterPaper(MethodView):
     def post(self, args: dict):
         keywords: str = args["keywords"]
         keywords = [i.lower() for i in keywords]
-        result = KeywordsModel.query \
-            .filter(KeywordsModel.keywords_lc.in_(keywords)).all()
-        return {
-            "success": True,
-            "result": result
-        }
+        result = KeywordsModel.query.filter(
+            KeywordsModel.keywords_lc.in_(keywords)
+        ).all()
+        return {"success": True, "result": result}

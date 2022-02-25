@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class KeywordsModel(db.Model):
     __table_args__ = {"schema": "docs"}
     __tablename__ = "doc_keywords_0"
