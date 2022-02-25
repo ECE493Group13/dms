@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config["API_TITLE"] = "DMS API"
 app.config["API_VERSION"] = "0.0.1"
 app.config.from_object(OpenAPIConfig)
-app.config["SQLALCHEMY_DATABASE_URI"] = DatabaseConfig.DB_PATH
+app.config.from_object(DatabaseConfig)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)

@@ -19,10 +19,6 @@ class FilterPaperQueryArgsSchema(Schema):
     keywords = fields.List(fields.Str())
 
 
-class FilterPaperResultSchema(Schema):
-    result = fields.List(fields.Nested(KeywordsSchema))
-
-
 @blueprint.route("")
 class FilterPaper(MethodView):
     @blueprint.arguments(FilterPaperQueryArgsSchema, location="json")
