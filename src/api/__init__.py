@@ -1,12 +1,12 @@
 from flask import Flask
-from flask_smorest import Api
 from flask_cors import CORS
+from flask_smorest import Api
 
 from api.config import OpenAPIConfig
 from api.database import db
+from api.views.filterpaper import blueprint as filterpaper_blueprint
 from api.views.healthcheck import blueprint as healthcheck_blueprint
 from api.views.wc import blueprint as wc_blueprint
-from api.views.filterpaper import blueprint as filterpaper_blueprint
 
 app = Flask(__name__)
 app.config["API_TITLE"] = "DMS API"
