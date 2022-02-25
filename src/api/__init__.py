@@ -8,7 +8,6 @@ from api.views.filterpaper import blueprint as filterpaper_blueprint
 from api.views.healthcheck import blueprint as healthcheck_blueprint
 from api.views.wc import blueprint as wc_blueprint
 
-
 app = Flask(__name__)
 app.config["API_TITLE"] = "DMS API"
 app.config["API_VERSION"] = "0.0.1"

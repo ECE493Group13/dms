@@ -1,5 +1,6 @@
 import os
 
+
 # https://flask-smorest.readthedocs.io/en/latest/openapi.html#serve-the-openapi-documentation
 class OpenAPIConfig:
     OPENAPI_VERSION = "3.0.2"
