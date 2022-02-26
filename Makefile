@@ -1,4 +1,3 @@
-include db/secrets.mk
 include db/rules.mk
 
 .phony: serve
