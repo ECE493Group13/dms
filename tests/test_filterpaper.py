@@ -34,13 +34,17 @@ def keywords(client: FlaskClient):
 
 
 class TestFilterpaper:
-    def test_single_word(self, client: FlaskClient):
-        response = client.post("/filterpaper", json={"keywords": ["hello world"]})
+    def test_single_word(self, client: FlaskClient, auth_headers: dict):
+        response = client.post(
+            "/filterpaper", json={"keywords": ["hello world"]}, headers=auth_headers
+        )
         assert response.status_code == HTTPStatus.OK
         assert len(response.json) == 1
         assert response.json[0]["keywords"] == "hello world"
 
-    def test_partial_match(self, client: FlaskClient):
-        response = client.post("/filterpaper", json={"keywords": ["world"]})
+    def test_partial_match(self, client: FlaskClient, auth_headers: dict):
+        response = client.post(
+            "/filterpaper", json={"keywords": ["world"]}, headers=auth_headers
+        )
         assert response.status_code == HTTPStatus.OK
         assert len(response.json) == 0
