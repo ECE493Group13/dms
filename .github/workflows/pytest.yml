@@ -2,6 +2,9 @@ name: Pytest
 
 on: [push, pull_request]
 
+env:
+  DB_PASSWORD: test
+
 jobs:
   build:
     runs-on: ubuntu-latest
