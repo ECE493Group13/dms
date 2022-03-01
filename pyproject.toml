@@ -6,6 +6,9 @@ build-backend = "setuptools.build_meta"
 profile = "black"
 src_paths = ["src", "test"]
 
+[tool.pylint.master]
+load-plugins = ["pylint_flask_sqlalchemy"]
+
 [tool.pylint.messages_control]
 disable = [
     # For black
