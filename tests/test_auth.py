@@ -106,3 +106,47 @@ class TestSession:
                 "/auth/logout", headers={"Authorization": f"Bearer {token}"}
             )
             assert response.status_code == HTTPStatus.UNAUTHORIZED
+
+
+class TestUpdatePassword:
+    def test_success(
+        self, client: FlaskClient, authorized_user: UserModel, auth_headers: dict
+    ):
+        """
+        Password updates should update the password in the db
+        """
+        old_password = "password"
+        old_password_hash = authorized_user.password
+        assert ph.verify(old_password_hash, old_password)
+
+        new_password = "new-password"
+
+        response = client.post(
+            "/auth/update-password",
+            json={"old_password": old_password, "new_password": new_password},
+            headers=auth_headers,
+        )
+        assert response.status_code == HTTPStatus.NO_CONTENT
+        new_password_hash = authorized_user.password
+        assert ph.verify(new_password_hash, new_password)
+
+    def test_wrong_old_password(
+        self, client: FlaskClient, authorized_user: UserModel, auth_headers: dict
+    ):
+        """
+        Password update does nothing if old password does not match
+        """
+        old_password = "password"
+        old_password_hash = authorized_user.password
+        assert ph.verify(old_password_hash, old_password)
+
+        new_password = "new-password"
+
+        response = client.post(
+            "/auth/update-password",
+            json={"old_password": "wrong-password", "new_password": new_password},
+            headers=auth_headers,
+        )
+        assert response.status_code == HTTPStatus.UNAUTHORIZED
+        new_password_hash = authorized_user.password
+        assert ph.verify(new_password_hash, old_password)
