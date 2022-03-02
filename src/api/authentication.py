@@ -34,22 +34,28 @@ class Auth:
         self.exclude_endpoints = app.config.get("AUTH_EXCLUDE_ENDPOINTS", [])
 
     def _before_request(self):
-        if request.endpoint not in self.exclude_endpoints:
-            token = get_token(request)
-            if token is None:
-                abort(HTTPStatus.UNAUTHORIZED)
-            session: SessionModel = (
-                db.session.query(SessionModel).filter_by(token=token).one_or_none()
-            )
-            if session is None:
-                abort(HTTPStatus.UNAUTHORIZED)
-            if (datetime.utcnow() - session.last_refresh) > SESSION_TIMEOUT:
-                db.session.delete(session)
-                db.session.commit()
-                abort(HTTPStatus.UNAUTHORIZED)
+        if request.method == "OPTIONS":
+            return
+        if request.endpoint is None:
+            return
+        if request.endpoint in self.exclude_endpoints:
+            return
 
-            session.last_refresh = datetime.utcnow()
-            g.session = session
+        token = get_token(request)
+        if token is None:
+            abort(HTTPStatus.UNAUTHORIZED)
+        session: SessionModel = (
+            db.session.query(SessionModel).filter_by(token=token).one_or_none()
+        )
+        if session is None:
+            abort(HTTPStatus.UNAUTHORIZED)
+        if (datetime.utcnow() - session.last_refresh) > SESSION_TIMEOUT:
+            db.session.delete(session)
+            db.session.commit()
+            abort(HTTPStatus.UNAUTHORIZED)
+
+        session.last_refresh = datetime.utcnow()
+        g.session = session
 
     def _after_request(self, response: Response):
         if "session" in g:
