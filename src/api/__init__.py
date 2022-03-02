@@ -16,7 +16,14 @@ app.config["API_VERSION"] = "0.0.1"
 app.config.from_object(OpenAPIConfig)
 app.config.from_object(DatabaseConfig)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["AUTH_EXCLUDE_ENDPOINTS"] = ["healthcheck.Healthcheck", "auth.Login"]
+app.config["AUTH_EXCLUDE_ENDPOINTS"] = [
+    "healthcheck.Healthcheck",
+    "auth.Login",
+    "api-docs.openapi_rapidoc",
+    "api-docs.openapi_swagger_ui",
+    "api-docs.openapi_redoc",
+    "api-docs.openapi_json",
+]
 
 db.init_app(app)
 auth.init_app(app)
