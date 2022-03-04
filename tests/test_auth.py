@@ -113,7 +113,8 @@ class TestUpdatePassword:
         self, client: FlaskClient, authorized_user: UserModel, auth_headers: dict
     ):
         """
-        Password updates should update the password in the db
+        Password updates should update the password in the db and refresh
+        session token.
         """
         old_password = "password"
         old_password_hash = authorized_user.password
@@ -126,9 +127,10 @@ class TestUpdatePassword:
             json={"old_password": old_password, "new_password": new_password},
             headers=auth_headers,
         )
-        assert response.status_code == HTTPStatus.NO_CONTENT
+        assert response.status_code == HTTPStatus.OK
         new_password_hash = authorized_user.password
         assert ph.verify(new_password_hash, new_password)
+        assert "token" in response.json
 
     def test_wrong_old_password(
         self, client: FlaskClient, authorized_user: UserModel, auth_headers: dict

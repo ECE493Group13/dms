@@ -26,6 +26,10 @@ class UpdatePasswordSchema(Schema):
     new_password = fields.Str(required=True)
 
 
+class UpdatePasswordResponseSchema(Schema):
+    token = fields.Str()
+
+
 ph = argon2.PasswordHasher()
 
 
@@ -70,7 +74,7 @@ class Logout(MethodView):
 @blueprint.route("/update-password")
 class UpdatePassword(MethodView):
     @blueprint.arguments(UpdatePasswordSchema, location="json")
-    @blueprint.response(HTTPStatus.NO_CONTENT)
+    @blueprint.response(HTTPStatus.OK, UpdatePasswordResponseSchema)
     @blueprint.alt_response(HTTPStatus.UNAUTHORIZED)
     def post(self, args: dict[str, str]):
         old_password = args["old_password"]
@@ -84,3 +88,5 @@ class UpdatePassword(MethodView):
 
         auth.user.password = ph.hash(new_password)
         db.session.commit()
+        token = auth.refresh_session().token
+        return {"token": token}
