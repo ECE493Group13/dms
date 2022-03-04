@@ -7,7 +7,7 @@ from flask.testing import FlaskClient
 from freezegun import freeze_time
 from sqlalchemy.orm.session import Session
 
-from api.authentication import SESSION_TIMEOUT
+from api.authentication import ABSOLUTE_TIMEOUT, REFRESH_TIMEOUT
 from api.database import SessionModel, UserModel, db
 
 ph = argon2.PasswordHasher()
@@ -91,9 +91,9 @@ class TestSession:
         )
         assert response.status_code == HTTPStatus.UNAUTHORIZED
 
-    def test_session_expired(self, client: FlaskClient, user: UserModel):
+    def test_session_refresh_expired(self, client: FlaskClient, user: UserModel):
         """
-        Token should fail to authorize user after it expires
+        Token should fail to authorize user after it expires due to inactivity
         """
         with freeze_time(datetime.utcnow()) as frozen_time:
             response = client.post(
@@ -102,11 +102,41 @@ class TestSession:
             assert response.status_code == HTTPStatus.OK
             token = response.json["token"]
 
-            frozen_time.tick(SESSION_TIMEOUT)
+            response = client.post(
+                "/auth/ping", headers={"Authorization": f"Bearer {token}"}
+            )
+            assert response.status_code == HTTPStatus.NO_CONTENT
+
+            frozen_time.tick(REFRESH_TIMEOUT)
             frozen_time.tick(timedelta(seconds=1))
 
             response = client.post(
-                "/auth/logout", headers={"Authorization": f"Bearer {token}"}
+                "/auth/ping", headers={"Authorization": f"Bearer {token}"}
+            )
+            assert response.status_code == HTTPStatus.UNAUTHORIZED
+
+    def test_session_absolute_expired(self, client: FlaskClient, user: UserModel):
+        """
+        Sessions should expire even after refreshes after a period of time
+        """
+        start_time = datetime.utcnow()
+        with freeze_time(start_time) as frozen_time:
+            response = client.post(
+                "/auth/login", json={"username": "example", "password": "password"}
+            )
+            assert response.status_code == HTTPStatus.OK
+            token = response.json["token"]
+
+            while (datetime.utcnow() - start_time) < ABSOLUTE_TIMEOUT:
+                frozen_time.tick(REFRESH_TIMEOUT / 2)
+                response = client.post(
+                    "/auth/ping", headers={"Authorization": f"Bearer {token}"}
+                )
+                assert response.status_code == HTTPStatus.NO_CONTENT
+
+            frozen_time.tick(timedelta(seconds=1))
+            response = client.post(
+                "/auth/ping", headers={"Authorization": f"Bearer {token}"}
             )
             assert response.status_code == HTTPStatus.UNAUTHORIZED
 
