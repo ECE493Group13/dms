@@ -5,6 +5,7 @@ import argon2
 import pytest
 from flask.testing import FlaskClient
 from freezegun import freeze_time
+from sqlalchemy.orm.session import Session
 
 from api.authentication import SESSION_TIMEOUT
 from api.database import SessionModel, UserModel, db
@@ -23,7 +24,10 @@ class TestLogin:
         assert response.status_code == HTTPStatus.OK
         assert "token" in response.json
         assert user.session is not None
+        print(response.json)
         assert user.session.token == response.json["token"]
+        assert "is_temp_password" in response.json
+        assert response.json["is_temp_password"] is False
 
     def test_wrong_name(self, client: FlaskClient, user: UserModel):
         response = client.post(
@@ -131,6 +135,29 @@ class TestUpdatePassword:
         new_password_hash = authorized_user.password
         assert ph.verify(new_password_hash, new_password)
         assert "token" in response.json
+
+    def test_temp_password(
+        self, client: FlaskClient, authorized_user: UserModel, auth_headers: dict
+    ):
+        """
+        User.is_temp_password should be set to False after password change
+        """
+        authorized_user.is_temp_password = True
+        Session.object_session(authorized_user).commit()
+
+        old_password = "password"
+        old_password_hash = authorized_user.password
+        assert ph.verify(old_password_hash, old_password)
+
+        new_password = "new-password"
+
+        response = client.post(
+            "/auth/update-password",
+            json={"old_password": old_password, "new_password": new_password},
+            headers=auth_headers,
+        )
+        assert response.status_code == HTTPStatus.OK
+        assert authorized_user.is_temp_password is False
 
     def test_wrong_old_password(
         self, client: FlaskClient, authorized_user: UserModel, auth_headers: dict
