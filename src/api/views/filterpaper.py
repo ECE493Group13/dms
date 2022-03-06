@@ -16,7 +16,7 @@ class KeywordsSchema(SQLAlchemyAutoSchema):
 
 
 class FilterPaperQueryArgsSchema(Schema):
-    keywords = fields.List(fields.Str())
+    keywords = fields.List(fields.Str(), required=True)
 
 
 @blueprint.route("")

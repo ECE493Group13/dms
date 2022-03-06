@@ -6,12 +6,22 @@ build-backend = "setuptools.build_meta"
 profile = "black"
 src_paths = ["src", "test"]
 
+[tool.pylint.master]
+load-plugins = [
+    "pylint_flask_sqlalchemy",
+    "pylint_pytest",
+]
+# A hack to get rid of a bunch of errors that pylint-flask-sqlalchemy really
+# should deal with but apparently does not
+ignored-classes = ["scoped_session"]
+
 [tool.pylint.messages_control]
 disable = [
     # For black
     "bad-continuation",
     "bad-whitespace",
     # General annoyances
+    "assigning-non-slot",  # For SQLAlchemy
     "missing-class-docstring",
     "missing-function-docstring",
     "missing-module-docstring",

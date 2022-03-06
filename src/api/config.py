@@ -21,7 +21,7 @@ class DatabaseConfig:
     HOST = "localhost"
     DATABASE = "postgres"
     PORT = "5433"
-    PASSWORD = os.environ["DB_PASSWORD"]
+    PASSWORD = os.environ.get("DB_PASSWORD", "test")
     SQLALCHEMY_DATABASE_URI = (
         f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}"
     )

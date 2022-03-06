@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, DateTime, Float, Integer, Text
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, Text
+from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
 
@@ -15,3 +18,25 @@ class KeywordsModel(db.Model):
     keyword_score = Column(Float)
     doc_count = Column(Integer)
     insert_date = Column(DateTime)
+
+
+class UserModel(db.Model):
+    __tablename__ = "user"
+
+    id = Column(Integer, primary_key=True)
+    email = Column(Text, nullable=False)
+    username = Column(Text, nullable=False)
+    password = Column(Text, nullable=False)
+    is_temp_password = Column(Boolean, nullable=False)
+
+    session = relationship("SessionModel", uselist=False, back_populates="user")
+
+
+class SessionModel(db.Model):
+    __tablename__ = "session"
+
+    token = Column(Text, primary_key=True)
+    last_refresh = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user = relationship("UserModel", uselist=False, back_populates="session")
