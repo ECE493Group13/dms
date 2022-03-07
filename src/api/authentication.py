@@ -87,7 +87,14 @@ class Auth:
     def remove_session(self):
         if "session" in g:
             db.session.delete(g.session)
+            db.session.commit()
             g.pop("session")
+
+    def refresh_session(self):
+        assert "session" in g
+        user = self.user
+        self.remove_session()
+        return self.add_session(user)
 
 
 auth = Auth()
