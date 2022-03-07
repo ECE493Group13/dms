@@ -19,6 +19,7 @@ class LoginSchema(Schema):
 
 class LoginResponseSchema(Schema):
     token = fields.Str()
+    is_temp_password = fields.Bool()
 
 
 class UpdatePasswordSchema(Schema):
@@ -61,7 +62,8 @@ class Login(MethodView):
             user.password = ph.hash(password)
 
         token = auth.add_session(user).token
-        return {"token": token}
+        is_temp_password = user.is_temp_password
+        return {"token": token, "is_temp_password": is_temp_password}
 
 
 @blueprint.route("/logout")
@@ -87,6 +89,7 @@ class UpdatePassword(MethodView):
             abort(HTTPStatus.UNAUTHORIZED)
 
         auth.user.password = ph.hash(new_password)
+        auth.user.is_temp_password = False
         db.session.commit()
         token = auth.refresh_session().token
         return {"token": token}
