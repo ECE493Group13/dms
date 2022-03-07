@@ -24,8 +24,8 @@ class UserModel(db.Model):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
-    email = Column(Text, nullable=False)
-    username = Column(Text, nullable=False)
+    email = Column(Text, nullable=False, unique=True)
+    username = Column(Text, nullable=False, unique=True)
     password = Column(Text, nullable=False)
     is_temp_password = Column(Boolean, nullable=False)
 
@@ -40,3 +40,13 @@ class SessionModel(db.Model):
 
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     user = relationship("UserModel", uselist=False, back_populates="session")
+
+
+class RegisterModel(db.Model):
+    __tablename__ = "register"
+
+    id = Column(Integer, primary_key=True)
+    email = Column(Text, unique=True)
+    username = Column(Text, unique=True)
+    accepted = Column(Boolean, default=False)
+    accept_key = Column(Text)
