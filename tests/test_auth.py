@@ -24,7 +24,6 @@ class TestLogin:
         assert response.status_code == HTTPStatus.OK
         assert "token" in response.json
         assert user.session is not None
-        print(response.json)
         assert user.session.token == response.json["token"]
         assert "is_temp_password" in response.json
         assert response.json["is_temp_password"] is False
