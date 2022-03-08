@@ -289,7 +289,7 @@ class SkipgramWord2vecOp : public OpKernel {
     for (int i = 0; i < corpus_raw.size(); i++) {
       auto it = corpus_raw[i];
       int it_count = ngram_count_[i];
-      for (w: it) {
+      for (auto w: it) {
         word_freq[w] += it_count;
         corpus_size_ += it_count;
       }
@@ -341,7 +341,7 @@ class SkipgramWord2vecOp : public OpKernel {
     input = data;
     for (auto it: corpus_raw) {
       corpus_sep_by_sentence_.emplace_back(std::vector<int>());
-      for (w: it) {
+      for (auto w: it) {
         // std::cout << w << std::endl;
         // corpus_.push_back(gtl::FindWithDefault(word_id, w, kUnkId));
         corpus_sep_by_sentence_.back().push_back(gtl::FindWithDefault(word_id, w, kUnkId));
