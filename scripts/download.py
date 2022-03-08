@@ -12,8 +12,8 @@ num_files =  800
 urls = ["http://storage.googleapis.com/books/ngrams/books/googlebooks-eng-fiction-all-5gram-20090715-{}.csv.zip".format(i)
   for i in range(num_files)]
 
-sp.check_output("mkdir -p {}", shell=True)
+sp.check_output("mkdir -p {}".format(args.download_dir), shell=True)
 
 for url in urls:
-  sp.check_output("wget -P {}/ {}".format(url), shell=True)
+  sp.check_output("wget -P {}/ {}".format(args.download_dir, url), shell=True)
 
