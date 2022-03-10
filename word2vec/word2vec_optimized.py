@@ -406,6 +406,28 @@ class Word2Vec(object):
       for (neighbor, distance) in zip(idx[i, :num], vals[i, :num]):
         print("%-20s %6.4f" % (self._id2word[neighbor], distance))
 
+  def get_embed(self):
+    ids = np.array([self._word2id.get(x, 0) for x in self._word2id.keys()])
+    embeds = tf.gather(self._w_in, ids).eval()
+    print("{}, {}".format(len(self._word2id.keys()), embeds.shape))
+    return self._word2id.keys(), embeds
+
+  def save_embeddings(self):
+    """Save word embeddings in the word2vec file format"""
+    opts = self._options
+    model_name = (opts.train_data.split('/')[-1]).split('.')[0]
+    filename = os.path.join(opts.save_path, "embeddings_{}.txt".format(model_name))
+
+    words, embeds = self.get_embed()
+    vocab_size = len(words)
+    dimensionality = len(embeds[0])
+
+    with open(filename, "w") as file:
+      file.write("{} {}\n".format(vocab_size, dimensionality))
+      for word, embed in zip(words, embeds):
+        file.write("{} {}\n".format(word, " ".join(str(v) for v in embed)))
+
+
 
 def _start_shell(local_ns=None):
   # An interactive shell is useful for debugging/development.
@@ -438,6 +460,7 @@ def main(_):
     sp.check_output('mkdir -p question_result', shell=True)
     with open('question_result/result_question_{}.pkl'.format(opts.emb_dim), 'w') as f:
       pickle.dump(model.question_accuracy, f)
+    model.save_embeddings()
     if FLAGS.interactive:
       # E.g.,
       # [0]: model.analogy(b'france', b'paris', b'russia')
