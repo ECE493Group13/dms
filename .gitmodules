@@ -1,0 +1,3 @@
+[submodule "submodules/ngram-word2vec"]
+	path = submodules/ngram-word2vec
+	url = git@github.com:ECE493Group13/ngram-word2vec.git

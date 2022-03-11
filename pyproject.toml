@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "test"]
+
+[tool.pylint.messages_control]
+disable = [
+    # For black
+    "bad-continuation",
+    "bad-whitespace",
+    # General annoyances
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "missing-module-docstring",
+    "too-few-public-methods",
+]
+
+[tool.pylint.format]
+max-line-length = "88"
