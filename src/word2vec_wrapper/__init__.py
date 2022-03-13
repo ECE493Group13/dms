@@ -84,7 +84,7 @@ def train(input_filename: Path, output_filename: Path, hparams: dict[str, Any]):
     hparam_args = []
     for name, value in hparams.items():
         hparam_args.append(f"--{name}")
-        hparam_args.append(value)
+        hparam_args.append(str(value))
 
     with TemporaryDirectory() as tempdir:
         with open_image() as image_file:
