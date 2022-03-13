@@ -383,8 +383,8 @@ class Word2Vec(object):
             break
     print()
     print("Eval %4d/%d accuracy = %4.1f%%" % (correct, total,
-                                              correct * 100.0 / total))
-    self.question_accuracy.append(correct*1.0 / total)
+                                              correct * 100.0 / max(total, 1)))
+    self.question_accuracy.append(correct*1.0 / max(total, 1))
 
   def analogy(self, w0, w1, w2):
     """Predict word w3 as in w0:w1 vs w2:w3."""
