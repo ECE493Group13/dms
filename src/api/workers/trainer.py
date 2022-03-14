@@ -1,6 +1,6 @@
 import json
 from contextlib import contextmanager
-from datetime import date, datetime
+from datetime import datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from time import sleep
@@ -10,6 +10,7 @@ import word2vec_wrapper
 from logzero import logger
 from sqlalchemy.orm.session import Session
 
+from api import app
 from api.database import (
     DatasetModel,
     DatasetPaperModel,
@@ -26,8 +27,8 @@ if TYPE_CHECKING:
 
 @contextmanager
 def db_session():
-    with db.app.app_context():
-        session: Session = db.app.session
+    with app.app_context():
+        session: Session = db.session
         yield session
 
 
@@ -98,13 +99,13 @@ def tick(session: Session):
 
 def main():
     while True:
-        sleep(10)
-
         with db_session() as session:
             try:
                 tick(session)
             except Exception:  # pylint: disable=W0703
                 logger.exception("Failed to run tick()")
+
+        sleep(10)
 
 
 if __name__ == "__main__":
