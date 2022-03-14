@@ -3,6 +3,7 @@ from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from unittest.mock import MagicMock
 
 import pytest
 from flask.testing import FlaskClient
@@ -232,3 +233,19 @@ class TestTrainer:
         trainer.tick(db.session)
 
         assert len(task.models) == 1
+        assert task.end_time is not None
+
+    def test_tick_failed(self, dataset: DatasetModel, hparams: dict, monkeypatch):
+        task = TrainTaskModel(hparams=json.dumps(hparams), dataset=dataset)
+        db.session.add(task)
+        db.session.commit()
+
+        word2vec_wrapper = MagicMock()
+        word2vec_wrapper.train.side_effect = RuntimeError("error")
+        monkeypatch.setattr(trainer, "word2vec_wrapper", word2vec_wrapper)
+
+        with pytest.raises(RuntimeError):
+            trainer.tick(db.session)
+
+        assert len(task.models) == 0
+        assert task.end_time is not None
