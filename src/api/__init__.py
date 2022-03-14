@@ -10,6 +10,7 @@ from api.views.auth import blueprint as login_blueprint
 from api.views.filterpaper import blueprint as filterpaper_blueprint
 from api.views.healthcheck import blueprint as healthcheck_blueprint
 from api.views.register import blueprint as register_blueprint
+from api.views.train_task import blueprint as train_task_blueprint
 from api.views.wc import blueprint as wc_blueprint
 
 app = Flask(__name__)
@@ -42,4 +43,5 @@ api.register_blueprint(filterpaper_blueprint)
 api.register_blueprint(healthcheck_blueprint)
 api.register_blueprint(login_blueprint)
 api.register_blueprint(register_blueprint)
+api.register_blueprint(train_task_blueprint)
 api.register_blueprint(wc_blueprint)
