@@ -213,7 +213,10 @@ class TestTrainer:
         with NamedTemporaryFile() as file:
             trainer.write_corpus(db.session, dataset, Path(file.name))
             db.session.commit()
-            assert file.read().decode().splitlines()[:2] == ["aliqua\t2", "incididunt\t7"]
+            assert file.read().decode().splitlines()[:2] == [
+                "aliqua\t2",
+                "incididunt\t7",
+            ]
 
     def test_read_embeddings(self, dataset: DatasetModel, hparams: dict):
         """
