@@ -2,11 +2,10 @@ import json
 from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
-from tempfile import NamedTemporaryFile, TemporaryFile
+from tempfile import NamedTemporaryFile
 
 import pytest
 from flask.testing import FlaskClient
-from sqlalchemy.orm.session import Session
 
 from api.database import (
     DatasetModel,

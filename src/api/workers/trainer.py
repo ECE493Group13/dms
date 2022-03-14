@@ -43,8 +43,8 @@ def get_next_task(session: Session):
 
 
 def write_corpus(session: Session, dataset: DatasetModel, filename: Path):
-    with open(filename, "w") as file:
-        query: Query[NgramModel] = (
+    with open(filename, "w", encoding="utf-8") as file:
+        query: "Query[NgramModel]" = (
             session.query(NgramModel)
             .join(PaperModel)
             .join(DatasetPaperModel)
@@ -72,7 +72,7 @@ def run_task(session: Session, task: TrainTaskModel):
 
         logger.info("Write corpus to %s", corpus_filename)
         write_corpus(session, task.dataset, corpus_filename)
-        logger.info(f"Train with hparams %s", hparams)
+        logger.info("Train with hparams %s", hparams)
         word2vec_wrapper.train(corpus_filename, embeddings_filename, hparams)
         logger.info("Read corpus from %s", embeddings_filename)
         read_embeddings(session, task, embeddings_filename)
@@ -103,7 +103,7 @@ def main():
         with db_session() as session:
             try:
                 tick(session)
-            except Exception:
+            except Exception:  # pylint: disable=W0703
                 logger.exception("Failed to run tick()")
 
 
