@@ -207,12 +207,18 @@ class TestTrainTask:
 
 class TestTrainer:
     def test_write_corpus(self, dataset: DatasetModel):
+        """
+        Ngrams should be written to the corpus file
+        """
         with NamedTemporaryFile() as file:
             trainer.write_corpus(db.session, dataset, Path(file.name))
             db.session.commit()
             assert file.read().decode().splitlines()[:2] == ["aliqua\t2", "incididunt\t7"]
 
     def test_read_embeddings(self, dataset: DatasetModel, hparams: dict):
+        """
+        Should create a new trained model for the embeddings
+        """
         task = TrainTaskModel(hparams=json.dumps(hparams), dataset=dataset)
         db.session.add(task)
         db.session.commit()
@@ -226,6 +232,9 @@ class TestTrainer:
         assert task.models[0].data == b"hello world"
 
     def test_tick(self, dataset: DatasetModel, hparams: dict):
+        """
+        Should successfully train, producing a model and marking task as done
+        """
         task = TrainTaskModel(hparams=json.dumps(hparams), dataset=dataset)
         db.session.add(task)
         db.session.commit()
@@ -236,6 +245,9 @@ class TestTrainer:
         assert task.end_time is not None
 
     def test_tick_failed(self, dataset: DatasetModel, hparams: dict, monkeypatch):
+        """
+        Should mark task as done even if training fails
+        """
         task = TrainTaskModel(hparams=json.dumps(hparams), dataset=dataset)
         db.session.add(task)
         db.session.commit()

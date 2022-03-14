@@ -1,6 +1,6 @@
 import json
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from time import sleep
