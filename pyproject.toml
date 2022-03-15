@@ -22,6 +22,7 @@ disable = [
     "bad-whitespace",
     # General annoyances
     "assigning-non-slot",  # For SQLAlchemy
+    "duplicate-code",  # Appears to catch duplicate imports??
     "missing-class-docstring",
     "missing-function-docstring",
     "missing-module-docstring",

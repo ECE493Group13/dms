@@ -1,7 +1,16 @@
 from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, Text
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    LargeBinary,
+    Text,
+)
 from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
@@ -32,15 +41,42 @@ class PaperModel(db.Model):
     meta_title = Column(Text)
     title = Column(Text)
 
-    datasets = relationship("DatasetModel", secondary="dataset_paper", viewonly=True)
+
+class NgramModel(db.Model):
+    """
+    ORM class for the ngram table from the general index.
+
+    This real table has no primary keys, but primary keys have been added here
+    to stop SQLAlchemy from complaining.
+    """
+
+    __table_args__ = {"schema": "docs"}
+    __tablename__ = "doc_ngrams_0"
+
+    ngram = Column(Text, primary_key=True)
+    ngram_lc = Column(Text)
+    ngram_tokens = Column(Integer)
+    ngram_count = Column(Integer)
+    term_freq = Column(Float)
+    doc_count = Column(Integer)
+    insert_date = Column(DateTime)
+
+    dkey = Column(Text, ForeignKey("docs.doc_meta_0.dkey"), primary_key=True)
 
 
 class KeywordsModel(db.Model):
+    """
+    ORM class for the keywords table from the general index.
+
+    This real table has no primary keys, but primary keys have been added here
+    to stop SQLAlchemy from complaining.
+    """
+
     __table_args__ = {"schema": "docs"}
     __tablename__ = "doc_keywords_0"
 
     dkey = Column(Text, primary_key=True)
-    keywords = Column(Text)
+    keywords = Column(Text, primary_key=True)
     keywords_lc = Column(Text)
     keyword_tokens = Column(Integer)
     keyword_score = Column(Float)
@@ -90,8 +126,6 @@ class DatasetModel(db.Model):
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     user = relationship("UserModel", uselist=False)
 
-    papers = relationship("PaperModel", secondary="dataset_paper", viewonly=True)
-
 
 class DatasetPaperModel(db.Model):
     """Association table for dataset-paper relation"""
@@ -117,3 +151,15 @@ class TrainTaskModel(db.Model):
 
     dataset_id = Column(Integer, ForeignKey("dataset.id"), nullable=False)
     dataset = relationship("DatasetModel", uselist=False)
+
+    models = relationship("TrainedModel", back_populates="task")
+
+
+class TrainedModel(db.Model):
+    __tablename__ = "model"
+
+    id = Column(Integer, primary_key=True)
+    data = Column(LargeBinary, nullable=False)
+
+    task_id = Column(Integer, ForeignKey("train_task.id"), nullable=False)
+    task = relationship("TrainTaskModel", uselist=False, back_populates="models")
