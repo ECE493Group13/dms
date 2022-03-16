@@ -128,7 +128,8 @@ class FilterTaskModel(db.Model):
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     user = relationship("UserModel", uselist=False)
 
-    datasets = relationship("DatasetModel", back_populates="task")
+    dataset_id = Column(Integer, ForeignKey("dataset.id"), nullable=True)
+    dataset = relationship("DatasetModel", uselist=False, back_populates="task")
 
 
 class DatasetModel(db.Model):
@@ -136,8 +137,7 @@ class DatasetModel(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    task_id = Column(Integer, ForeignKey("FilterTaskModel.id"), nullable=False)
-    task = relationship("FilterTaskModel.id", uselist=False, back_populates="datasets")
+    task = relationship("FilterTaskModel", uselist=False, back_populates="dataset")
 
 
 class DatasetPaperModel(db.Model):
@@ -162,17 +162,20 @@ class TrainTaskModel(db.Model):
     start_time = Column(DateTime, nullable=True)
     end_time = Column(DateTime, nullable=True)
 
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user = relationship("UserModel", uselist=False)
+
     dataset_id = Column(Integer, ForeignKey("dataset.id"), nullable=False)
     dataset = relationship("DatasetModel", uselist=False)
 
-    models = relationship("TrainedModel", back_populates="task")
+    model_id = Column(Integer, ForeignKey("trained_model.id"), nullable=True)
+    model = relationship("TrainedModel", uselist=False, back_populates="task")
 
 
 class TrainedModel(db.Model):
-    __tablename__ = "model"
+    __tablename__ = "trained_model"
 
     id = Column(Integer, primary_key=True)
     data = Column(LargeBinary, nullable=False)
 
-    task_id = Column(Integer, ForeignKey("train_task.id"), nullable=False)
-    task = relationship("TrainTaskModel", uselist=False, back_populates="models")
+    task = relationship("TrainTaskModel", uselist=False, back_populates="model")

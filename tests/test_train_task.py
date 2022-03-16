@@ -11,6 +11,7 @@ from flask.testing import FlaskClient
 from api.database import (
     DatasetModel,
     DatasetPaperModel,
+    FilterTaskModel,
     NgramModel,
     PaperModel,
     TrainTaskModel,
@@ -104,9 +105,17 @@ def dataset(authorized_user: UserModel):
     paper1_ngrams = make_ngrams(paper1, TEXT.strip())
     paper2_ngrams = make_ngrams(paper2, TEXT.strip())
 
-    dataset_ = DatasetModel(keywords="back pain", user=authorized_user)
+    dataset_ = DatasetModel()
 
-    db.session.add_all([paper1, paper2, *paper1_ngrams, *paper2_ngrams, dataset_])
+    task = FilterTaskModel(
+        user=authorized_user,
+        start_time=datetime.utcnow(),
+        end_time=datetime.utcnow(),
+        keywords="back pain",
+        dataset=dataset_,
+    )
+
+    db.session.add_all([paper1, paper2, *paper1_ngrams, *paper2_ngrams, dataset_, task])
     db.session.flush()
     db.session.add(DatasetPaperModel(dataset_id=dataset_.id, dkey="doc1"))
     db.session.commit()
@@ -115,7 +124,9 @@ def dataset(authorized_user: UserModel):
 
 @pytest.fixture()
 def train_task(dataset: DatasetModel, hparams: dict):
-    task = TrainTaskModel(hparams=json.dumps(hparams), dataset=dataset)
+    task = TrainTaskModel(
+        hparams=json.dumps(hparams), user=dataset.task.user, dataset=dataset
+    )
     db.session.add(task)
     db.session.commit()
     return task
@@ -222,7 +233,9 @@ class TestTrainer:
         """
         Should create a new trained model for the embeddings
         """
-        task = TrainTaskModel(hparams=json.dumps(hparams), dataset=dataset)
+        task = TrainTaskModel(
+            hparams=json.dumps(hparams), user=dataset.task.user, dataset=dataset
+        )
         db.session.add(task)
         db.session.commit()
 
@@ -231,27 +244,31 @@ class TestTrainer:
             file.flush()
             trainer.read_embeddings(db.session, task, Path(file.name))
         db.session.commit()
-        assert len(task.models) == 1
-        assert task.models[0].data == b"hello world"
+        assert task.model is not None
+        assert task.model.data == b"hello world"
 
     def test_tick(self, dataset: DatasetModel, hparams: dict):
         """
         Should successfully train, producing a model and marking task as done
         """
-        task = TrainTaskModel(hparams=json.dumps(hparams), dataset=dataset)
+        task = TrainTaskModel(
+            hparams=json.dumps(hparams), user=dataset.task.user, dataset=dataset
+        )
         db.session.add(task)
         db.session.commit()
 
         trainer.tick(db.session)
 
-        assert len(task.models) == 1
+        assert task.model is not None
         assert task.end_time is not None
 
     def test_tick_failed(self, dataset: DatasetModel, hparams: dict, monkeypatch):
         """
         Should mark task as done even if training fails
         """
-        task = TrainTaskModel(hparams=json.dumps(hparams), dataset=dataset)
+        task = TrainTaskModel(
+            hparams=json.dumps(hparams), user=dataset.task.user, dataset=dataset
+        )
         db.session.add(task)
         db.session.commit()
 
@@ -262,5 +279,5 @@ class TestTrainer:
         with pytest.raises(RuntimeError):
             trainer.tick(db.session)
 
-        assert len(task.models) == 0
+        assert task.model is None
         assert task.end_time is not None
