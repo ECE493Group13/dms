@@ -121,6 +121,8 @@ class FilterTaskModel(db.Model):
 
     id = Column(Integer, primary_key=True)
     created = Column(DateTime, nullable=False, default=datetime.utcnow)
+    start_time = Column(DateTime, nullable=True)
+    end_time = Column(DateTime, nullable=True)
     keywords = Column(Text, nullable=False)
 
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
