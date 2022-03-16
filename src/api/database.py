@@ -116,8 +116,8 @@ class RegisterModel(db.Model):
     accept_key = Column(Text)
 
 
-class DatasetModel(db.Model):
-    __tablename__ = "dataset"
+class FilterTaskModel(db.Model):
+    __tablename__ = "filter_task"
 
     id = Column(Integer, primary_key=True)
     created = Column(DateTime, nullable=False, default=datetime.utcnow)
@@ -125,6 +125,17 @@ class DatasetModel(db.Model):
 
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     user = relationship("UserModel", uselist=False)
+
+    datasets = relationship("DatasetModel", back_populates="task")
+
+
+class DatasetModel(db.Model):
+    __tablename__ = "dataset"
+
+    id = Column(Integer, primary_key=True)
+
+    task_id = Column(Integer, ForeignKey("FilterTaskModel.id"), nullable=False)
+    task = relationship("FilterTaskModel.id", uselist=False, back_populates="datasets")
 
 
 class DatasetPaperModel(db.Model):
