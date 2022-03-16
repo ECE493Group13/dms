@@ -11,7 +11,7 @@ from api.authentication import auth
 from api.database import DatasetModel, FilterTaskModel, db
 from sqlalchemy.engine.result import ResultProxy
 
-blueprint = Blueprint("filter", "filter", url_prefix="/filter")
+blueprint = Blueprint("filter-task", "filter-task", url_prefix="/filter-task")
 
 
 class FilterPostSchema(Schema):
