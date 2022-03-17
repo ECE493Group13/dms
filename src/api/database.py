@@ -148,6 +148,10 @@ class FilterTaskModel(db.Model):
     def is_error(cls):  # pylint: disable=no-self-argument
         return cls.dataset_id.is_(None) & cls.is_complete
 
+    # Hacks to make pylint work
+    is_complete: Column
+    is_error: Column
+
 
 class DatasetModel(db.Model):
     __tablename__ = "dataset"
