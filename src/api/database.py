@@ -11,6 +11,7 @@ from sqlalchemy import (
     LargeBinary,
     Text,
 )
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
@@ -130,6 +131,22 @@ class FilterTaskModel(db.Model):
 
     dataset_id = Column(Integer, ForeignKey("dataset.id"), nullable=True)
     dataset = relationship("DatasetModel", uselist=False, back_populates="task")
+
+    @hybrid_property
+    def is_complete(self):
+        return self.end_time is not None
+
+    @is_complete.expression
+    def is_complete(cls):  # pylint: disable=no-self-argument
+        return cls.end_time.isnot(None)
+
+    @hybrid_property
+    def is_error(self):
+        return self.dataset_id is None
+
+    @is_error.expression
+    def is_error(cls):  # pylint: disable=no-self-argument
+        return cls.dataset_id.is_(None) & cls.is_complete
 
 
 class DatasetModel(db.Model):
