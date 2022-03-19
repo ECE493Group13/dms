@@ -7,6 +7,7 @@ from api.config import DatabaseConfig, MailConfig, OpenAPIConfig
 from api.database import db
 from api.mail import mail
 from api.views.auth import blueprint as login_blueprint
+from api.views.filter_task import blueprint as filter_task_blueprint
 from api.views.filterpaper import blueprint as filterpaper_blueprint
 from api.views.healthcheck import blueprint as healthcheck_blueprint
 from api.views.register import blueprint as register_blueprint
@@ -39,6 +40,7 @@ CORS(app)
 
 api = Api(app)
 
+api.register_blueprint(filter_task_blueprint)
 api.register_blueprint(filterpaper_blueprint)
 api.register_blueprint(healthcheck_blueprint)
 api.register_blueprint(login_blueprint)

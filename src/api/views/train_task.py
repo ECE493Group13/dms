@@ -8,7 +8,7 @@ from marshmallow import Schema, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from api.authentication import auth
-from api.database import DatasetModel, TrainTaskModel, db
+from api.database import DatasetModel, FilterTaskModel, TrainTaskModel, db
 
 blueprint = Blueprint("train-task", "train-task", url_prefix="/train-task")
 
@@ -49,12 +49,14 @@ class TrainTask(MethodView):
 
         dataset = (
             db.session.query(DatasetModel)
-            .filter_by(user_id=auth.user.id)
-            .filter_by(id=dataset_id)
+            .join(FilterTaskModel)
+            .filter(FilterTaskModel.user_id == auth.user.id)
+            .filter(DatasetModel.id == dataset_id)
         ).one()
 
         task = TrainTaskModel(
             hparams=json.dumps(hparams, sort_keys=True),
+            user=auth.user,
             dataset=dataset,
         )
         db.session.add(task)
@@ -66,11 +68,7 @@ class TrainTask(MethodView):
     def get(self, args: dict[str, Any]):
         dataset_id: int | None = args.get("dataset_id")
 
-        query = (
-            db.session.query(TrainTaskModel)
-            .join(DatasetModel)
-            .filter(DatasetModel.user_id == auth.user.id)
-        )
+        query = db.session.query(TrainTaskModel).filter_by(user_id=auth.user.id)
 
         if dataset_id is not None:
             query = query.filter(TrainTaskModel.dataset_id == dataset_id)
@@ -85,9 +83,8 @@ class TrainTaskById(MethodView):
     def get(self, train_task_id: int):
         train_task = (
             db.session.query(TrainTaskModel)
-            .join(DatasetModel)
-            .filter(DatasetModel.user_id == auth.user.id)
-            .filter(TrainTaskModel.id == train_task_id)
+            .filter_by(user_id=auth.user.id)
+            .filter_by(id=train_task_id)
             .one_or_none()
         )
         if train_task is None:

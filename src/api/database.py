@@ -11,6 +11,7 @@ from sqlalchemy import (
     LargeBinary,
     Text,
 )
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
@@ -116,15 +117,48 @@ class RegisterModel(db.Model):
     accept_key = Column(Text)
 
 
-class DatasetModel(db.Model):
-    __tablename__ = "dataset"
+class FilterTaskModel(db.Model):
+    __tablename__ = "filter_task"
 
     id = Column(Integer, primary_key=True)
     created = Column(DateTime, nullable=False, default=datetime.utcnow)
+    start_time = Column(DateTime, nullable=True)
+    end_time = Column(DateTime, nullable=True)
     keywords = Column(Text, nullable=False)
 
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     user = relationship("UserModel", uselist=False)
+
+    dataset_id = Column(Integer, ForeignKey("dataset.id"), nullable=True)
+    dataset = relationship("DatasetModel", uselist=False, back_populates="task")
+
+    @hybrid_property
+    def is_complete(self):
+        return self.end_time is not None
+
+    @is_complete.expression
+    def is_complete(cls):  # pylint: disable=no-self-argument
+        return cls.end_time.isnot(None)
+
+    @hybrid_property
+    def is_error(self):
+        return self.dataset_id is None
+
+    @is_error.expression
+    def is_error(cls):  # pylint: disable=no-self-argument
+        return cls.dataset_id.is_(None) & cls.is_complete
+
+    # Hacks to make pylint work
+    is_complete: Column
+    is_error: Column
+
+
+class DatasetModel(db.Model):
+    __tablename__ = "dataset"
+
+    id = Column(Integer, primary_key=True)
+
+    task = relationship("FilterTaskModel", uselist=False, back_populates="dataset")
 
 
 class DatasetPaperModel(db.Model):
@@ -149,17 +183,20 @@ class TrainTaskModel(db.Model):
     start_time = Column(DateTime, nullable=True)
     end_time = Column(DateTime, nullable=True)
 
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user = relationship("UserModel", uselist=False)
+
     dataset_id = Column(Integer, ForeignKey("dataset.id"), nullable=False)
     dataset = relationship("DatasetModel", uselist=False)
 
-    models = relationship("TrainedModel", back_populates="task")
+    model_id = Column(Integer, ForeignKey("trained_model.id"), nullable=True)
+    model = relationship("TrainedModel", uselist=False, back_populates="task")
 
 
 class TrainedModel(db.Model):
-    __tablename__ = "model"
+    __tablename__ = "trained_model"
 
     id = Column(Integer, primary_key=True)
     data = Column(LargeBinary, nullable=False)
 
-    task_id = Column(Integer, ForeignKey("train_task.id"), nullable=False)
-    task = relationship("TrainTaskModel", uselist=False, back_populates="models")
+    task = relationship("TrainTaskModel", uselist=False, back_populates="model")
