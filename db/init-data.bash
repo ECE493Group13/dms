@@ -15,3 +15,7 @@ db_exec 'CREATE ROLE roger'
 unzip -p ~/data/GeneralIndex.keywords.0/doc_keywords_0.sql.zip | head -n 10000 | psql $DB_URL
 unzip -p ~/data/GeneralIndex.ngrams.0/doc_ngrams_0.sql.zip | head -n 10000 | psql $DB_URL
 unzip -p ~/data/GeneralIndex.info.0/doc_info_0.sql.zip | head -n 10000 | psql $DB_URL
+
+# Remove non-unique documents (~1%) and add primary key
+db_exec 'DELETE FROM docs.doc_meta_0 WHERE dkey NOT IN (SELECT dkey FROM docs.doc_meta_0 GROUP BY dkey HAVING count(*) = 1)'
+db_exec 'ALTER TABLE docs.doc_meta_0 ADD PRIMARY KEY (dkey)'
