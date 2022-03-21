@@ -80,7 +80,7 @@ class Auth:
         # but not yet in g. Remove it.
         if user.session is not None:
             db.session.delete(user.session)
-        
+
         token = secrets.token_hex(nbytes=32)
         session = SessionModel(token=token, user=user)
         db.session.add(session)
