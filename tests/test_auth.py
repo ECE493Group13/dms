@@ -52,6 +52,35 @@ class TestLogin:
                 "/auth/login", json={"username": "example", "password": "password"}
             )
 
+    def test_login_twice(self, client: FlaskClient, user: UserModel):
+        """
+        Login, and login again before the timeout happens.
+
+        Regression test for DMS-90
+        """
+        with freeze_time(datetime.utcnow()):
+            # Login
+            response = client.post(
+                "/auth/login", json={"username": "example", "password": "password"}
+            )
+            assert response.status_code == HTTPStatus.OK
+            assert "token" in response.json
+            token = response.json["token"]
+
+            assert db.session.query(SessionModel).count() == 1
+
+            # Login again
+            response = client.post(
+                "/auth/login",
+                json={"username": "example", "password": "password"},
+                headers={"Authorization": f"Bearer {token}"},
+            )
+            assert response.status_code == HTTPStatus.OK
+            assert "token" in response.json
+            token = response.json["token"]
+
+            assert db.session.query(SessionModel).count() == 1
+
 
 class TestLogout:
     def test_success(self, client: FlaskClient, auth_headers: dict):

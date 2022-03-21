@@ -76,7 +76,11 @@ class Auth:
 
     def add_session(self, user: UserModel):
         assert "session" not in g
-        assert user.session is None
+        # If we are just logging in, there may be an old session in the db
+        # but not yet in g. Remove it.
+        if user.session is not None:
+            db.session.delete(user.session)
+        
         token = secrets.token_hex(nbytes=32)
         session = SessionModel(token=token, user=user)
         db.session.add(session)
