@@ -24,10 +24,6 @@ db_exec 'ALTER TABLE docs.doc_meta_0 ADD PRIMARY KEY (dkey)'
 echo 'Unzip keywords (~40 minutes)'
 unzip -p ~/data/GeneralIndex.keywords.0/doc_keywords_0.sql.zip | tqdm --dynamic-ncols --smoothing 0 --unit-scale --total 1240042165 | psql $DB_URL
 
-echo 'Create indices for keywords'
-db_exec 'CREATE INDEX doc_keywords_0_dkey_idx ON docs.doc_keywords_0 USING btree (dkey)'
-db_exec 'CREATE INDEX doc_keywords_0_keywords_lc_idx ON docs.doc_keywords_0 USING btree (keywords_lc)'
-
 echo 'Unzip ngrams (~12 hours / 12 = 1 hour)'
 unzip -p ~/data/GeneralIndex.ngrams.0/doc_ngrams_0.sql.zip | head -n 1850415729 | tqdm --dynamic-ncols --smoothing 0 --unit-scale --total 1850415729 | psql $DB_URL
 
