@@ -101,6 +101,7 @@ class SessionModel(db.Model):
     __tablename__ = "session"
 
     token = Column(Text, primary_key=True)
+    created = Column(DateTime, nullable=False, default=datetime.utcnow)
     last_refresh = Column(DateTime, nullable=False, default=datetime.utcnow)
 
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
