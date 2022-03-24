@@ -19,3 +19,4 @@ unzip -p ~/data/GeneralIndex.info.0/doc_info_0.sql.zip | head -n 10000 | psql $D
 # Remove non-unique documents (~1%) and add primary key
 db_exec 'DELETE FROM docs.doc_meta_0 WHERE dkey NOT IN (SELECT dkey FROM docs.doc_meta_0 GROUP BY dkey HAVING count(*) = 1)'
 db_exec 'ALTER TABLE docs.doc_meta_0 ADD PRIMARY KEY (dkey)'
+db_exec 'GRANT ALL ON SCHEMA docs TO public'
