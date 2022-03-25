@@ -77,7 +77,7 @@ class TestFilterTask:
         task: FilterTaskModel = (
             db.session.query(FilterTaskModel).filter_by(id=response.json["id"]).one()
         )
-        WorkerRunner(FilterWorker())._tick(db.session)
+        WorkerRunner(FilterWorker())._tick(db.session)  # pylint: disable=W0212
         db.session.commit()
 
         assert task.keywords == "back pain"

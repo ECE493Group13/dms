@@ -10,7 +10,7 @@ from api.workers.worker import Worker, WorkerRunner
 
 
 @pytest.fixture(autouse=True)
-def session(client: FlaskClient):
+def db_session(client: FlaskClient):
     with client.application.app_context():
         yield db.session
 
@@ -42,31 +42,31 @@ class FailWorker(Worker):
 
 
 class TestWorkerRunner:
-    def test_tick_success(self, session: Session):
+    def test_tick_success(self, db_session: Session):
         """
         WorkerRunner._tick() calls Worker.execute() and sets start/end time.
         """
         task = MockTaskModel()
-        session.add(task)
-        session.commit()
+        db_session.add(task)
+        db_session.commit()
 
-        WorkerRunner(SuccessWorker())._tick(session)
+        WorkerRunner(SuccessWorker())._tick(db_session)  # pylint: disable=W0212
 
         assert task.start_time is not None
         assert task.end_time is not None
         assert task.result == 1
 
-    def test_tick_fail(self, session: Session):
+    def test_tick_fail(self, db_session: Session):
         """
         If worker.execute() fails, WorkerRunner._tick() still sets start/end
         time.
         """
         task = MockTaskModel()
-        session.add(task)
-        session.commit()
+        db_session.add(task)
+        db_session.commit()
 
         with pytest.raises(RuntimeError):
-            WorkerRunner(FailWorker())._tick(session)
+            WorkerRunner(FailWorker())._tick(db_session)  # pylint: disable=W0212
 
         assert task.start_time is not None
         assert task.end_time is not None

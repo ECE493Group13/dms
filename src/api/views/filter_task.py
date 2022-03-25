@@ -1,15 +1,13 @@
-from datetime import datetime
 from http import HTTPStatus
 from typing import Any
 
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from logzero import logger
 from marshmallow import Schema, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from api.authentication import auth
-from api.database import DatasetModel, FilterTaskModel, db
+from api.database import FilterTaskModel, db
 
 blueprint = Blueprint("filter-task", "filter-task", url_prefix="/filter-task")
 

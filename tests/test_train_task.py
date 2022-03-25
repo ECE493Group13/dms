@@ -3,7 +3,6 @@ from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from unittest.mock import MagicMock
 
 import pytest
 from flask.testing import FlaskClient
