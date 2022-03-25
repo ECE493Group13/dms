@@ -132,6 +132,26 @@ class TestTrainTask:
         response = client.get(f"/train-task/{train_task.id+1}", headers=auth_headers)
         assert response.status_code == HTTPStatus.NOT_FOUND
 
+    def test_suggest_hparams(self, client: FlaskClient, auth_headers: dict):
+        """
+        Can get suggested hyperparameters for the user to modify
+        """
+        response = client.get("/train-task/suggest-hparams", headers=auth_headers)
+        assert response.status_code == HTTPStatus.OK
+        expected_keys = {
+            "embedding_size",
+            "epochs_to_train",
+            "learning_rate",
+            "num_neg_samples",
+            "batch_size",
+            "concurrent_steps",
+            "window_size",
+            "min_count",
+            "subsample",
+        }
+        assert set(response.json.keys()) == expected_keys
+        assert response.json["embedding_size"] == 200
+
 
 class TestTrainer:
     def test_write_corpus(self, dataset: DatasetModel):
