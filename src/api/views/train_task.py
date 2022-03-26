@@ -38,6 +38,9 @@ class TrainTaskSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = TrainTaskModel
 
+    is_complete = fields.Bool()
+    is_error = fields.Bool()
+
 
 @blueprint.route("")
 class TrainTask(MethodView):

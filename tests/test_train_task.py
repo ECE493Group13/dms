@@ -18,6 +18,7 @@ from api.database import (
 )
 from api.workers import trainer
 from api.workers.trainer import TrainWorker
+from api.workers.worker import WorkerRunner
 
 
 @pytest.fixture()
@@ -85,6 +86,8 @@ class TestTrainTask:
         assert response.json["created"] is not None
         assert response.json["start_time"] is None
         assert response.json["end_time"] is None
+        assert response.json["is_complete"] is False
+        assert response.json["is_error"] is False
 
         task = (
             db.session.query(TrainTaskModel)
@@ -194,7 +197,9 @@ class TestTrainWorker:
         db.session.add(task)
         db.session.commit()
 
-        TrainWorker().execute(db.session, task)
+        WorkerRunner(TrainWorker())._tick(db.session)  # pylint: disable=W0212
         db.session.commit()
 
         assert task.model is not None
+        assert task.is_complete is True
+        assert task.is_error is False
