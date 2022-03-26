@@ -143,7 +143,7 @@ class FilterTaskModel(db.Model):
 
     @hybrid_property
     def is_error(self):
-        return self.dataset_id is None
+        return self.dataset_id is None and self.is_complete
 
     @is_error.expression
     def is_error(cls):  # pylint: disable=no-self-argument
