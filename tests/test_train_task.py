@@ -3,7 +3,6 @@ from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from unittest.mock import MagicMock
 
 import pytest
 from flask.testing import FlaskClient
@@ -18,6 +17,7 @@ from api.database import (
     db,
 )
 from api.workers import trainer
+from api.workers.trainer import TrainWorker
 
 
 @pytest.fixture()
@@ -153,7 +153,7 @@ class TestTrainTask:
         assert response.json["embedding_size"] == 200
 
 
-class TestTrainer:
+class TestTrainWorker:
     def test_write_corpus(self, dataset: DatasetModel):
         """
         Ngrams should be written to the corpus file
@@ -184,9 +184,9 @@ class TestTrainer:
         assert task.model is not None
         assert task.model.data == b"hello world"
 
-    def test_tick(self, dataset: DatasetModel, hparams: dict):
+    def test_execute(self, dataset: DatasetModel, hparams: dict):
         """
-        Should successfully train, producing a model and marking task as done
+        Should successfully train, producing a model
         """
         task = TrainTaskModel(
             hparams=json.dumps(hparams), user=dataset.task.user, dataset=dataset
@@ -194,27 +194,7 @@ class TestTrainer:
         db.session.add(task)
         db.session.commit()
 
-        trainer.tick(db.session)
+        TrainWorker().execute(db.session, task)
+        db.session.commit()
 
         assert task.model is not None
-        assert task.end_time is not None
-
-    def test_tick_failed(self, dataset: DatasetModel, hparams: dict, monkeypatch):
-        """
-        Should mark task as done even if training fails
-        """
-        task = TrainTaskModel(
-            hparams=json.dumps(hparams), user=dataset.task.user, dataset=dataset
-        )
-        db.session.add(task)
-        db.session.commit()
-
-        word2vec_wrapper = MagicMock()
-        word2vec_wrapper.train.side_effect = RuntimeError("error")
-        monkeypatch.setattr(trainer, "word2vec_wrapper", word2vec_wrapper)
-
-        with pytest.raises(RuntimeError):
-            trainer.tick(db.session)
-
-        assert task.model is None
-        assert task.end_time is not None
