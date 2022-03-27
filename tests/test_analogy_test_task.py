@@ -4,6 +4,8 @@ import pytest
 from flask.testing import FlaskClient
 
 from api.database import (
+    AnalogyTestResultModel,
+    AnalogyTestResultRowModel,
     AnalogyTestTaskModel,
     TrainedModel,
     TrainTaskModel,
@@ -82,3 +84,66 @@ class TestAnalogyTestTask:
         assert response.status_code == HTTPStatus.OK
         assert response.json["domain1_name"] == "Anatomy"
         assert response.json["domain1_words"] == ["annulus", "cervical spine"]
+
+
+@pytest.fixture()
+def analogy_test_result(analogy_test_task: AnalogyTestTaskModel):
+    result = AnalogyTestResultModel()
+    row = AnalogyTestResultRowModel(
+        domain1_name="domain1",
+        domain2_name="domain2",
+        word_a="king",
+        word_b="queen",
+        word_c="man",
+        word_d="woman",
+        analogy_strength=1.0,
+        result=result,
+    )
+    db.session.add_all([result, row])
+    analogy_test_task.result = result
+    db.session.flush()
+    return result
+
+
+class TestAnalogyTestResult:
+    def test_get(
+        self,
+        client: FlaskClient,
+        auth_headers: dict,
+        analogy_test_result: AnalogyTestResultModel,
+    ):
+        """
+        Can get the result of an analogy test task
+        """
+        response = client.get(
+            f"/analogy-test-task/{analogy_test_result.task.id}/result",
+            headers=auth_headers,
+        )
+        assert response.status_code == HTTPStatus.OK
+        assert len(response.json["rows"]) == 1
+        assert response.json["rows"][0]["domain1_name"] == "domain1"
+
+    def test_no_task(self, client: FlaskClient, auth_headers: dict):
+        """
+        Returns 404 if there's no such task
+        """
+        response = client.get(
+            "/analogy-test-task/1/result",
+            headers=auth_headers,
+        )
+        assert response.status_code == HTTPStatus.NOT_FOUND
+
+    def test_no_result(
+        self,
+        client: FlaskClient,
+        auth_headers: dict,
+        analogy_test_task: AnalogyTestTaskModel,
+    ):
+        """
+        Returns 404 if the task has no associated result
+        """
+        response = client.get(
+            f"/analogy-test-task/{analogy_test_task.id}/result",
+            headers=auth_headers,
+        )
+        assert response.status_code == HTTPStatus.NOT_FOUND
