@@ -24,6 +24,7 @@ class FilterListSchema(Schema):
 class FilterTaskSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = FilterTaskModel
+        include_fk = True
 
     is_complete = fields.Bool()
     is_error = fields.Bool()

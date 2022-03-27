@@ -33,6 +33,7 @@ class AnalogyTestListSchema(Schema):
 class AnalogyTestTaskSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = AnalogyTestTaskModel
+        include_fk = True
 
     is_complete = fields.Bool()
     is_error = fields.Bool()
