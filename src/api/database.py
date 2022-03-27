@@ -2,6 +2,7 @@ from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import (
+    JSON,
     Boolean,
     Column,
     DateTime,
@@ -219,6 +220,7 @@ class TrainedModel(db.Model):
 
     id = Column(Integer, primary_key=True)
     data = Column(LargeBinary, nullable=False)
+    visualization = Column(JSON)
 
     task = relationship("TrainTaskModel", uselist=False, back_populates="model")
 
