@@ -37,6 +37,7 @@ class TrainListSchema(Schema):
 class TrainTaskSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = TrainTaskModel
+        include_fk = True
 
     is_complete = fields.Bool()
     is_error = fields.Bool()
