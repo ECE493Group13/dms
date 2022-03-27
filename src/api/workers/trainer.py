@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 import word2vec_wrapper
 from gensim.models import KeyedVectors
+from gensim.models.phrases import Phraser, Phrases
 from logzero import logger
 from sklearn.manifold import TSNE
 from sqlalchemy.orm.session import Session
@@ -14,7 +15,6 @@ from api.database import (
     DatasetModel,
     DatasetPaperModel,
     NgramModel,
-    PaperModel,
     TrainedModel,
     TrainTaskModel,
 )
@@ -28,13 +28,20 @@ def write_corpus(session: Session, dataset: DatasetModel, filename: Path):
     with open(filename, "w", encoding="utf-8") as file:
         query: "Query[NgramModel]" = (
             session.query(NgramModel)
-            .join(PaperModel)
-            .join(DatasetPaperModel)
-            .join(DatasetModel)
-            .filter(DatasetModel.id == dataset.id)
+            .join(DatasetPaperModel, DatasetPaperModel.dkey == NgramModel.dkey)
+            .filter(DatasetPaperModel.dataset_id == dataset.id)
+            .all()
         )
+
+        phrases = Phrases(sentences=None, min_count=20, threshold=5, progress_per=1000)
         for ngram in query:
-            file.write(f"{ngram.ngram_lc}\t{ngram.ngram_count}\n")
+            phrases.add_vocab([ngram.ngram_lc.split(" ")])
+
+        phrases_model = Phraser(phrases)
+
+        for ngram in query:
+            processed_ngram = " ".join(phrases_model[ngram.ngram_lc.split(" ")])
+            file.write(f"{processed_ngram}\t{ngram.ngram_count}\n")
 
 
 def read_embeddings(task: TrainTaskModel, filename: Path):
