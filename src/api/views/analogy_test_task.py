@@ -8,14 +8,7 @@ from marshmallow import Schema, fields, post_dump
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from api.authentication import auth
-from api.database import (
-    AnalogyTestResultModel,
-    AnalogyTestResultRowModel,
-    AnalogyTestTaskModel,
-    TrainedModel,
-    TrainTaskModel,
-    db,
-)
+from api.database import AnalogyTestTaskModel, TrainedModel, TrainTaskModel, db
 
 blueprint = Blueprint(
     "analogy-test-task", "analogy-test-task", url_prefix="/analogy-test-task"
@@ -128,32 +121,3 @@ class AnalogyTestTaskById(MethodView):
             abort(HTTPStatus.NOT_FOUND)
 
         return task
-
-
-class AnalogyTestResultRowSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = AnalogyTestResultRowModel
-
-
-class AnalogyTestResultSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = AnalogyTestResultModel
-
-    rows = fields.Nested(AnalogyTestResultRowSchema, many=True)
-
-
-@blueprint.route("/<int:analogy_test_task_id>/result")
-class AnalogyTestResult(MethodView):
-    @blueprint.response(HTTPStatus.OK, AnalogyTestResultSchema)
-    @blueprint.alt_response(HTTPStatus.NOT_FOUND)
-    def get(self, analogy_test_task_id: int):
-        task: AnalogyTestTaskModel | None = (
-            db.session.query(AnalogyTestTaskModel)
-            .filter(AnalogyTestTaskModel.user_id == auth.user.id)
-            .filter(AnalogyTestTaskModel.id == analogy_test_task_id)
-        ).one_or_none()
-
-        if task is None or task.result is None:
-            abort(HTTPStatus.NOT_FOUND)
-
-        return task.result
