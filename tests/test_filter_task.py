@@ -43,7 +43,7 @@ def keywords(papers: list[PaperModel]):
 
 @pytest.fixture()
 def filter_tasks(authorized_user: UserModel):
-    dataset = DatasetModel()
+    dataset = DatasetModel(num_papers=0)
     tasks = [
         FilterTaskModel(user=authorized_user, keywords="hello"),
         FilterTaskModel(
@@ -118,3 +118,16 @@ class TestFilterTask:
         )
         assert response.status_code == HTTPStatus.OK
         assert len(response.json) == 1
+
+    def test_list_dataset(self, client: FlaskClient, auth_headers: dict, filter_tasks):
+        """
+        Tasks should have a nested "dataset" field with "num_tasks"
+        """
+        response = client.get("/filter-task", headers=auth_headers)
+        assert response.status_code == HTTPStatus.OK
+        assert len(response.json) == 3
+
+        assert response.json[0]["dataset"] is None
+        assert response.json[1]["dataset"] is None
+        assert response.json[2]["dataset"] is not None
+        assert response.json[2]["dataset"]["num_papers"] == 0
