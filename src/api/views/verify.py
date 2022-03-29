@@ -59,8 +59,8 @@ class MostSimilar(MethodView):
         keyed_vectors = keyed_vectors_from_model(model)
         try:
             return [
-                {"word": word, "proximity": proximity}
-                for word, proximity in keyed_vectors.most_similar(word, topn=count)
+                {"word": word_, "proximity": proximity}
+                for word_, proximity in keyed_vectors.most_similar(word, topn=count)
             ]
         except KeyError:
             return []
