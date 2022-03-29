@@ -7,7 +7,8 @@ from marshmallow import Schema, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from api.authentication import auth
-from api.database import DatasetModel, FilterTaskModel, db
+from api.database import FilterTaskModel, db
+from api.schemas import DatasetSchema
 
 blueprint = Blueprint("filter-task", "filter-task", url_prefix="/filter-task")
 
@@ -19,12 +20,6 @@ class FilterPostSchema(Schema):
 class FilterListSchema(Schema):
     is_complete = fields.Bool()
     is_error = fields.Bool()
-
-
-class DatasetSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = DatasetModel
-        include_fk = True
 
 
 class FilterTaskSchema(SQLAlchemyAutoSchema):

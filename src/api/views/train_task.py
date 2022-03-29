@@ -9,6 +9,7 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from api.authentication import auth
 from api.database import DatasetModel, FilterTaskModel, TrainTaskModel, db
+from api.schemas import DatasetSchema
 
 blueprint = Blueprint("train-task", "train-task", url_prefix="/train-task")
 
@@ -41,6 +42,8 @@ class TrainTaskSchema(SQLAlchemyAutoSchema):
 
     is_complete = fields.Bool()
     is_error = fields.Bool()
+
+    dataset = fields.Nested(DatasetSchema)
 
 
 @blueprint.route("")

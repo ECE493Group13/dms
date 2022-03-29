@@ -159,6 +159,7 @@ class DatasetModel(db.Model):
     __tablename__ = "dataset"
 
     id = Column(Integer, primary_key=True)
+    name = Column(Text, nullable=False)
     num_papers = Column(Integer, nullable=False)
 
     task = relationship("FilterTaskModel", uselist=False, back_populates="dataset")
