@@ -1,15 +1,18 @@
 from http import HTTPStatus
+from pathlib import Path
 
 import pytest
 from flask.testing import FlaskClient
 
 from api.database import TrainedModel, TrainTaskModel, UserModel, db
 
+DATA_PATH = Path(__file__).parent / "data"
+
 
 @pytest.fixture()
 def trained_model(authorized_user: UserModel):
     task = TrainTaskModel(hparams="{}", user=authorized_user, dataset_id=0)
-    with open("embeddings.txt", "rb") as file:
+    with open(DATA_PATH / "embeddings.txt", "rb") as file:
         model = TrainedModel(data=file.read(), task=task)
     db.session.add_all([task, model])
     db.session.commit()
@@ -24,7 +27,7 @@ class TestMostSimilar:
         Can get most similar words to word in vocab
         """
         response = client.get(
-            f"/verify/most-similar?trained_model_id={trained_model.id}&word=bone",
+            f"/verify/most-similar?trained_model_id={trained_model.id}&word=treatment",
             headers=auth_headers,
         )
         assert response.status_code == HTTPStatus.OK
@@ -53,7 +56,7 @@ class TestAnalogyTest:
         """
         response = client.get(
             f"/verify/analogy-test?trained_model_id={trained_model.id}"
-            "&word_a=bone&word_b=bone_marrow&word_c=eye",
+            "&word_a=a&word_b=b&word_c=c",
             headers=auth_headers,
         )
         assert response.status_code == HTTPStatus.OK
@@ -67,7 +70,7 @@ class TestAnalogyTest:
         """
         response = client.get(
             f"/verify/analogy-test?trained_model_id={trained_model.id}"
-            "&word_a=bone&word_b=bone_marrow&word_c=asdf",
+            "&word_a=a&word_b=b&word_c=asdf",
             headers=auth_headers,
         )
         assert response.status_code == HTTPStatus.OK
