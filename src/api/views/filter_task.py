@@ -35,7 +35,7 @@ class FilterTaskSchema(SQLAlchemyAutoSchema):
     is_complete = fields.Bool()
     is_error = fields.Bool()
 
-    dataset = fields.Nested(DatasetSchema)
+    dataset = fields.Nested(DatasetSchema, allow_none=True)
 
 
 @blueprint.route("")
