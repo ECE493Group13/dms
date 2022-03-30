@@ -18,7 +18,7 @@ class FilterWorker(Worker):
         result = session.execute(
             """
             insert into dataset_paper (dataset_id, dkey)
-                select distinct :dataset_id, dkey from doc_keywords_0
+                select distinct :dataset_id, dkey from docs.doc_keywords_0
                 where keywords_lc = :keywords
             """,
             {"dataset_id": task.dataset.id, "keywords": task.keywords},
