@@ -23,7 +23,7 @@ from api.workers.worker import WorkerRunner
 
 @pytest.fixture()
 def dataset(authorized_user: UserModel, papers: list[PaperModel]):
-    dataset_ = DatasetModel(num_papers=0)
+    dataset_ = DatasetModel(num_papers=0, name="")
 
     task = FilterTaskModel(
         user=authorized_user,

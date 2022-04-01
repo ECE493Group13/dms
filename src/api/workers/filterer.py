@@ -11,7 +11,7 @@ class FilterWorker(Worker):
         return FilterTaskModel
 
     def execute(self, session: Session, task: FilterTaskModel):
-        dataset = DatasetModel(task=task, num_papers=0)
+        dataset = DatasetModel(task=task, num_papers=0, name=task.keywords)
         session.add(dataset)
         session.flush()
 

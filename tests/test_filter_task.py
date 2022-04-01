@@ -43,7 +43,7 @@ def keywords(papers: list[PaperModel]):
 
 @pytest.fixture()
 def filter_tasks(authorized_user: UserModel):
-    dataset = DatasetModel(num_papers=0)
+    dataset = DatasetModel(num_papers=0, name="")
     tasks = [
         FilterTaskModel(user=authorized_user, keywords="hello"),
         FilterTaskModel(
