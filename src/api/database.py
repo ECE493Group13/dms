@@ -221,7 +221,7 @@ class TrainedModel(db.Model):
     __tablename__ = "trained_model"
 
     id = Column(Integer, primary_key=True)
-    data = Column(LargeBinary, nullable=False)
+    embeddings_filename = Column(Text, nullable=False)
     visualization = Column(JSON)
 
     task = relationship("TrainTaskModel", uselist=False, back_populates="model")

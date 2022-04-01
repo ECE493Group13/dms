@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 import pytest
 from flask.testing import FlaskClient
@@ -63,6 +63,12 @@ def hparams():
         "min_count": 1,
         "subsample": 1e-3,
     }
+
+
+@pytest.fixture()
+def data_root():
+    with TemporaryDirectory() as tempdir:
+        yield Path(tempdir)
 
 
 class TestTrainTask:
@@ -169,24 +175,6 @@ class TestTrainWorker:
                 "incididunt\t7",
             ]
 
-    def test_read_embeddings(self, dataset: DatasetModel, hparams: dict):
-        """
-        Should create a new trained model for the embeddings
-        """
-        task = TrainTaskModel(
-            hparams=json.dumps(hparams), user=dataset.task.user, dataset=dataset
-        )
-        db.session.add(task)
-        db.session.commit()
-
-        with NamedTemporaryFile("wb") as file:
-            file.write(b"hello world")
-            file.flush()
-            model = trainer.read_embeddings(task, Path(file.name))
-
-        assert model is not None
-        assert model.data == b"hello world"
-
     def test_generate_visualization(self, dataset: DatasetModel, hparams: dict):
         """
         Should generate TSNe raw data for embeddings
@@ -221,15 +209,14 @@ class TestTrainWorker:
         with NamedTemporaryFile("wb") as file:
             file.write(b"2 1\nhello 0.1\nworld 0.2\n")
             file.flush()
-            model = trainer.read_embeddings(task, Path(file.name))
             visualization = trainer.generate_visualization(Path(file.name))
-            trainer.save_model(db.session, model, visualization)
+            trainer.save_model(db.session, task, Path(file.name), visualization)
 
-        assert task.model is not None
-        assert task.model.visualization is not None
-        assert task.model.data is not None
+            assert task.model is not None
+            assert task.model.visualization is not None
+            assert task.model.embeddings_filename is not None
 
-    def test_execute(self, dataset: DatasetModel, hparams: dict):
+    def test_execute(self, dataset: DatasetModel, hparams: dict, data_root: Path):
         """
         Should successfully train, producing a model
         """
@@ -239,7 +226,7 @@ class TestTrainWorker:
         db.session.add(task)
         db.session.commit()
 
-        WorkerRunner(TrainWorker())._tick(db.session)  # pylint: disable=W0212
+        WorkerRunner(TrainWorker(data_root))._tick(db.session)  # pylint: disable=W0212
         db.session.commit()
 
         assert task.model is not None

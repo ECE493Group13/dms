@@ -12,8 +12,9 @@ DATA_PATH = Path(__file__).parent / "data"
 @pytest.fixture()
 def trained_model(authorized_user: UserModel):
     task = TrainTaskModel(hparams="{}", user=authorized_user, dataset_id=0)
-    with open(DATA_PATH / "embeddings.txt", "rb") as file:
-        model = TrainedModel(data=file.read(), task=task)
+    model = TrainedModel(
+        embeddings_filename=str(DATA_PATH / "embeddings.txt"), task=task
+    )
     db.session.add_all([task, model])
     db.session.commit()
     return model

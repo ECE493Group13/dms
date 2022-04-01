@@ -1,7 +1,9 @@
 import json
+from datetime import datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING
+from uuid import uuid4
 
 import numpy as np
 import word2vec_wrapper
@@ -44,14 +46,8 @@ def write_corpus(session: Session, dataset: DatasetModel, filename: Path):
             file.write(f"{processed_ngram}\t{ngram.ngram_count}\n")
 
 
-def read_embeddings(task: TrainTaskModel, filename: Path):
-    with open(filename, "rb") as file:
-        model = TrainedModel(data=file.read(), task=task)
-        return model
-
-
-def generate_visualization(filename: Path):
-    word_vectors = KeyedVectors.load_word2vec_format(filename, binary=False)
+def generate_visualization(embeddings_filename: Path):
+    word_vectors = KeyedVectors.load_word2vec_format(embeddings_filename, binary=False)
 
     vectors = np.array(word_vectors.vectors)
     labels = np.array(word_vectors.index_to_key)
@@ -68,39 +64,54 @@ def generate_visualization(filename: Path):
     return json.dumps(data)
 
 
-def save_model(session: Session, model: TrainedModel, visualization):
-    model.visualization = visualization
+def save_model(
+    session: Session, task: TrainTaskModel, embeddings_filename: Path, visualization
+):
+    model = TrainedModel(
+        task=task,
+        embeddings_filename=str(embeddings_filename),
+        visualization=visualization,
+    )
     session.add(model)
     session.commit()
+    return model
 
 
-def run_task(session: Session, task: TrainTaskModel):
+def run_task(session: Session, task: TrainTaskModel, data_root: Path):
+    DATA_ROOT_PATH.mkdir(exist_ok=True)
+
     hparams = json.loads(task.hparams)
     with TemporaryDirectory() as tempdir:
         corpus_filename = Path(tempdir) / "corpus.txt"
-        embeddings_filename = Path(tempdir) / "embeddings.txt"
+        embeddings_filename = data_root / f"embeddings_{datetime.utcnow()}_{uuid4()}"
 
         logger.info("Write corpus to %s", corpus_filename)
         write_corpus(session, task.dataset, corpus_filename)
-        logger.info("Train with hparams %s", hparams)
+        logger.info(
+            "Train with hparams %s and save embeddings to %s",
+            hparams,
+            embeddings_filename,
+        )
         word2vec_wrapper.train(corpus_filename, embeddings_filename, hparams)
-        logger.info("Read corpus from %s", embeddings_filename)
-        model = read_embeddings(task, embeddings_filename)
+        logger.info("Generate visualization from %s", embeddings_filename)
         visualization = generate_visualization(embeddings_filename)
-        save_model(session, model, visualization)
+        save_model(session, task, embeddings_filename, visualization)
 
 
 class TrainWorker(Worker):
+    def __init__(self, data_root: Path):
+        self.data_root = data_root
+
     @property
     def task_model(self):
         return TrainTaskModel
 
     def execute(self, session: Session, task: TrainTaskModel):
-        run_task(session, task)
+        run_task(session, task, self.data_root)
 
 
 def main():
-    WorkerRunner(TrainWorker()).execute()
+    WorkerRunner(TrainWorker(data_root=DATA_ROOT_PATH)).execute()
 
 
 if __name__ == "__main__":
