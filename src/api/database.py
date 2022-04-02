@@ -1,17 +1,7 @@
 from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import (
-    JSON,
-    Boolean,
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    LargeBinary,
-    Text,
-)
+from sqlalchemy import JSON, Boolean, Column, DateTime, Float, ForeignKey, Integer, Text
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -221,7 +211,7 @@ class TrainedModel(db.Model):
     __tablename__ = "trained_model"
 
     id = Column(Integer, primary_key=True)
-    data = Column(LargeBinary, nullable=False)
+    embeddings_filename = Column(Text, nullable=False)
     visualization = Column(JSON)
 
     task = relationship("TrainTaskModel", uselist=False, back_populates="model")

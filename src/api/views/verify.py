@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from tempfile import NamedTemporaryFile
 from typing import Any
 
 from flask.views import MethodView
@@ -33,10 +32,7 @@ class AnalogyTestSchema(Schema):
 
 
 def keyed_vectors_from_model(model: TrainedModel) -> KeyedVectors:
-    with NamedTemporaryFile("wb") as tempfile:
-        tempfile.write(model.data)
-        tempfile.flush()
-        return KeyedVectors.load_word2vec_format(tempfile.name)
+    return KeyedVectors.load_word2vec_format(model.embeddings_filename)
 
 
 @blueprint.route("/most-similar")
