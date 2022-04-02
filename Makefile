@@ -24,3 +24,7 @@ run-trainer:
 .phony: run-filterer
 run-filterer:
 	DB_PASSWORD=$(PASSWORD) venv/bin/python src/api/workers/filterer.py
+
+.phony: test-serve
+test-serve:
+	DB_PASSWORD=test_password MAIL_PASSWORD=$(MAIL_PASSWORD) DB_PORT=5434 FLASK_ENV=development flask run --port 4433
