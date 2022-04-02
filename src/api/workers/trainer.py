@@ -26,6 +26,9 @@ if TYPE_CHECKING:
     from sqlalchemy.orm.query import Query
 
 
+DATA_ROOT_PATH = Path(__file__).parent.parent.parent.parent / "fs"
+
+
 def write_corpus(session: Session, dataset: DatasetModel, filename: Path):
     with open(filename, "w", encoding="utf-8") as file:
         query: "Query[NgramModel]" = (
@@ -78,7 +81,7 @@ def save_model(
 
 
 def run_task(session: Session, task: TrainTaskModel, data_root: Path):
-    DATA_ROOT_PATH.mkdir(exist_ok=True)
+    data_root.mkdir(exist_ok=True)
 
     hparams = json.loads(task.hparams)
     with TemporaryDirectory() as tempdir:
