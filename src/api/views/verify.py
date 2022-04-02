@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from tempfile import NamedTemporaryFile
 from typing import Any
 
 from flask.views import MethodView
