@@ -1,5 +1,6 @@
 .vscode/
 openapi.json
+secrets.mk
 db/data
 db/secrets.mk
 
