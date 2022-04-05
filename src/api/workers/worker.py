@@ -53,7 +53,7 @@ class WorkerRunner:
         next_task.start_time = datetime.utcnow()
         session.commit()
 
-        logger.info("Running task")
+        logger.info("Running task %d", next_task.id)
         try:
             self.worker.execute(session, next_task)
             session.commit()
