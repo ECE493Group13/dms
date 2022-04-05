@@ -110,7 +110,7 @@ class SuggestHParams(MethodView):
             "learning_rate": 0.025,
             "num_neg_samples": 5,
             "batch_size": 500,
-            "concurrent_steps": 12,
+            "concurrent_steps": 6,
             "window_size": 5,
             "min_count": 5,
             "subsample": 1e-3,
