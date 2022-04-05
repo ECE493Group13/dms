@@ -36,7 +36,7 @@ class WorkerRunner:
     def _get_next_task(self, session: Session):
         task = (
             session.query(self.worker.task_model)
-            .filter(self.worker.task_model.end_time.is_(None))
+            .filter(self.worker.task_model.start_time.is_(None))
             .order_by(self.worker.task_model.created.asc())
             .limit(1)
             .one_or_none()
@@ -53,7 +53,7 @@ class WorkerRunner:
         next_task.start_time = datetime.utcnow()
         session.commit()
 
-        logger.info("Running task")
+        logger.info("Running task %d", next_task.id)
         try:
             self.worker.execute(session, next_task)
             session.commit()
