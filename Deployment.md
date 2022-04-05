@@ -94,4 +94,19 @@ source venv/bin/activate
 make serve
 ```
 
+then from other terminals (I suggest you use tmux)
+
+```bash
+source venv/bin/activate
+make run-trainer
+```
+
+and
+
+```bash
+source venv/bin/activate
+make run-filterer
+```
+
+
 You can then use the application by navigating to http://localhost:3000 in a web browser.
