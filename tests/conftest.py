@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR1-12
+"""
+
 from datetime import datetime
 
 import argon2

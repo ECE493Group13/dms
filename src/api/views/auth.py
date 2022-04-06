@@ -1,3 +1,8 @@
+"""
+Functional requirements: FR2,3,4
+"""
+
+
 from http import HTTPStatus
 
 import argon2

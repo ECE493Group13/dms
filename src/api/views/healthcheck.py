@@ -1,3 +1,7 @@
+"""
+Functional requirements:
+"""
+
 from http import HTTPStatus
 
 from flask.views import MethodView

@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR2,3,4
+"""
+
 from datetime import datetime, timedelta
 from http import HTTPStatus
 

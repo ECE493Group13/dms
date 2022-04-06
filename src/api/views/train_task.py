@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR7,8,9
+"""
+
 import json
 from http import HTTPStatus
 from typing import Any

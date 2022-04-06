@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR10.1,10.2
+"""
+
 from http import HTTPStatus
 from pathlib import Path
 
