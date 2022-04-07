@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR1, 2, 3,
+ *
+ */
+
 import React, { useState } from "react";
 import { Button } from "../Components/Button";
 

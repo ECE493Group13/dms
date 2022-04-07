@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR1
+ *
+ */
+
 describe("Change Password Page", () => {
   const url = "http://localhost:3000";
 
@@ -100,7 +106,7 @@ describe("Change Password Page", () => {
       );
     });
 
-    it("should navigate to home page on success", () => {
+    it("should navigate to login page on success", () => {
       cy.intercept("POST", "/register").as("registerIntercept");
 
       cy.get("#input1").type("someinput");

@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR5, 6, 8, 9, 11, 12
+ *
+ */
+
 describe("Home Page", () => {
   const url = "http://localhost:3000";
 
@@ -216,7 +222,7 @@ describe("Home Page", () => {
         cy.visit(url + "/home");
         cy.wait(["@sampleDatasets"]);
 
-        cy.get(".first-tab > :nth-child(2)").contains("Empty dataset");
+        cy.get(".first-tab > :nth-child(3)").contains("Empty dataset");
       });
 
       it("should show alert if GET/train-task throws 401", () => {

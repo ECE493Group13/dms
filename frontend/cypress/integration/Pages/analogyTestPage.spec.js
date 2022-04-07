@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR10.2
+ *
+ */
+
 describe("Analogy Test Page", () => {
   const url = "http://localhost:3000";
 

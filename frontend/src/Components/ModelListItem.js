@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR9
+ *
+ */
+
 import React from "react";
 import { Button } from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

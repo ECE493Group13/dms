@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR10.1
+ *
+ */
+
 describe("Closest Words Page", () => {
   const url = "http://localhost:3000";
 

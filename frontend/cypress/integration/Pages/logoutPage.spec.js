@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR4
+ *
+ */
+
 describe("Logout Page", () => {
   const url = "http://localhost:3000";
 
@@ -22,7 +28,7 @@ describe("Logout Page", () => {
     });
   });
 
-  describe("Black box tests", () => {
+  describe("White box tests", () => {
     it("should redirect to home page when logout is clicked", () => {
       cy.intercept("POST", "/auth/logout").as("logout");
       cy.get(".dms-button").contains("Logout").click();

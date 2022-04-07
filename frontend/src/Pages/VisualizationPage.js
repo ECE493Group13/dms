@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR11
+ *
+ */
+
 import React, { useState, useEffect } from "react";
 import { Header } from "../Components/Header";
 import { API_BASE_URL } from "../constants";

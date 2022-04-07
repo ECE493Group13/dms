@@ -1,3 +1,11 @@
+/**
+ *
+ * Provides a way to access the home page and profile page
+ *
+ * Functional Requirements: No functional requirements mandate the inclusion of this file
+ *
+ */
+
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";

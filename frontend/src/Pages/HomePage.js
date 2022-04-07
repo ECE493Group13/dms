@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR5, 6, 9, 12
+ *
+ */
+
 import React, { useEffect } from "react";
 import { Header } from "../Components/Header";
 import { KeywordBar } from "../Components/KeywordBar";

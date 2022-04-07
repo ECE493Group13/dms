@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR5
+ *
+ */
+
 import React, { useState } from "react";
 import { API_BASE_URL } from "../constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR7
+ *
+ */
+
 describe("Hyperparameter Adjustment Page", () => {
   const url = "http://localhost:3000";
 

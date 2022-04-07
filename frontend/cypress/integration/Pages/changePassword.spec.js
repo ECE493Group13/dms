@@ -1,3 +1,9 @@
+/**
+ *
+ * Functional Requirements: FR3
+ *
+ */
+
 describe("Change Password Page", () => {
   const url = "http://localhost:3000";
 
@@ -6,10 +12,6 @@ describe("Change Password Page", () => {
   });
 
   describe("Black box tests", () => {
-    it('it should have "Data Mining System" in the header', () => {
-      cy.get("#header").should("have.text", "Data Mining System");
-    });
-
     it('it should have "Data Mining System" in the header', () => {
       cy.get("#header").should("have.text", "Data Mining System");
     });
