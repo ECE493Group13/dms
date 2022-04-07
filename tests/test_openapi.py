@@ -1,5 +1,8 @@
 """
-Functional requirements:
+Make sure api documentation is being generated properly as it is useful during
+development.
+
+Functional requirements: No functional requirements mandate the inclusion of this file
 """
 
 from http import HTTPStatus

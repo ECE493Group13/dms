@@ -1,5 +1,7 @@
 """
-Functional requirements:
+Tests for the healthcheck endpoint (see healthcheck.py).
+
+Functional requirements: No functional requirements mandate the inclusion of this file
 """
 
 from http import HTTPStatus
