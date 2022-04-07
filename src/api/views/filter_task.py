@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR5,6
+"""
+
 from http import HTTPStatus
 from typing import Any
 

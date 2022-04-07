@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR1-12
+"""
+
 from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy

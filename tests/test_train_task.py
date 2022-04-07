@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR7,8,9
+"""
+
 import json
 from datetime import datetime
 from http import HTTPStatus

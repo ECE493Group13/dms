@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR2-12
+"""
+
 import secrets
 from datetime import datetime, timedelta
 from http import HTTPStatus

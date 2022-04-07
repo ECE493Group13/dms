@@ -2,6 +2,8 @@
 The implmentation of Word2Vec was based on the following tutorial by
 TensorFlow: https://www.tensorflow.org/tutorials/text/word2vec and adapted
 to fit our use case
+
+Functional Requirements: FR8
 """
 import astroid
 import numpy as np

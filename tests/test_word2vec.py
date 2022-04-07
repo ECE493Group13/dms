@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR8
+"""
+
 from tempfile import NamedTemporaryFile
 
 from api.word2vec import word2vec

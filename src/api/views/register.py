@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR1
+"""
+
 import secrets
 import string
 from http import HTTPStatus

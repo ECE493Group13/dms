@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR11,12
+"""
+
 import json
 from http import HTTPStatus
 

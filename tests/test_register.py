@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR1
+"""
+
 from http import HTTPStatus
 
 import pytest

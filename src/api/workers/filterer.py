@@ -1,3 +1,7 @@
+"""
+Functional requirements: FR5
+"""
+
 from logzero import logger
 from sqlalchemy.orm.session import Session
 

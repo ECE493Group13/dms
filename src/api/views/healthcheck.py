@@ -1,3 +1,9 @@
+"""
+Adds a healthcheck endpoint which is useful in debugging the API.
+
+Functional requirements: No functional requirements mandate the inclusion of this file
+"""
+
 from http import HTTPStatus
 
 from flask.views import MethodView

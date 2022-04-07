@@ -1,4 +1,9 @@
-"""Obtained from NLTK's list of english stopwords"""
+"""
+Obtained from NLTK's list of english stopwords
+
+Functional requirements: FR8
+"""
+
 stopwords = [
     "i",
     "me",
