@@ -1,0 +1,6 @@
+*.pkl
+*.txt
+*.log
+*.pyc
+*.csv
+good_hosts
