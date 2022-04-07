@@ -1,0 +1,16 @@
+{
+  "is_error": true,
+  "user_id": 0,
+  "dataset_id": 0,
+  "end_time": "2019-08-24T14:15:22Z",
+  "is_complete": true,
+  "created": "2019-08-24T14:15:22Z",
+  "start_time": "2019-08-24T14:15:22Z",
+  "id": 0,
+  "dataset": {
+      "name": "string",
+      "num_papers": 0,
+      "id": 0
+  },
+  "keywords": "word"
+}

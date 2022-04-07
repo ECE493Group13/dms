@@ -1,0 +1,17 @@
+[
+  {
+    "created": "2022-03-30T16:53:41.335004",
+    "dataset": {
+      "id": 42,
+      "num_papers": 0
+    },
+    "dataset_id": 42,
+    "end_time": "2022-03-30T16:58:41.308920",
+    "id": 41,
+    "is_complete": false,
+    "is_error": false,
+    "keywords": "back pain",
+    "start_time": "2022-03-30T16:58:41.247755",
+    "user_id": 5
+  }
+]

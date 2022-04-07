@@ -1,0 +1,50 @@
+[
+  {
+    "created": "2022-03-30T17:06:17.797795",
+    "dataset": {
+      "id": 43,
+      "name": "stress fracture", 
+      "num_papers": 385
+    },
+    "dataset_id": 43,
+    "end_time": "2022-03-30T17:06:44.134766",
+    "id": 42,
+    "is_complete": true,
+    "is_error": false,
+    "keywords": "stress fracture",
+    "start_time": "2022-03-30T17:06:43.879733",
+    "user_id": 5
+  },
+  {
+    "created": "2022-03-30T16:53:41.335004",
+    "dataset": {
+      "id": 42,
+      "name": "back pain", 
+      "num_papers": 0
+    },
+    "dataset_id": 42,
+    "end_time": "2022-03-30T16:58:41.308920",
+    "id": 41,
+    "is_complete": true,
+    "is_error": false,
+    "keywords": "back pain",
+    "start_time": "2022-03-30T16:58:41.247755",
+    "user_id": 5
+  },
+  {
+    "created": "2022-03-30T16:53:41.335004",
+    "dataset": {
+      "id": 27, 
+      "name": "sample error", 
+      "num_papers": 0
+    },
+    "dataset_id": 28,
+    "end_time": "2022-03-26T20:57:46.123751",
+    "id": 27,
+    "is_complete": true,
+    "is_error": true,
+    "keywords": "sample error",
+    "start_time": "2022-03-26T20:57:36.936730",
+    "user_id": 5
+  }
+]
