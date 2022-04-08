@@ -3,6 +3,8 @@
 The Data Mining System is an easy to use web-application which applies word2vec, a natural language processing algorithm, to a large repository of medical research papers to identify and discover hidden data patterns.
 
 For deployment instructions, see [Deployment.md](Deployment.md).
+There are several deployment steps, such as database setup, which you can (and should) skip if you are deploying on the paperspace machine.
+These parts are noted as such *in italics*. 
 
 The test plan can be found in [TestPlan.pdf](TestPlan.pdf).
 
