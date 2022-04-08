@@ -12,6 +12,8 @@ You will also need around 1 TB free disk space.
 
 ## Download research papers
 
+*If you are on the paperspace machine, skip this section.*
+
 Malamud's general index can be found [here](https://archive.org/details/GeneralIndex).
 It is split into 16 slices.
 Download slice 0 to `~/data`.
@@ -43,16 +45,19 @@ replacing the `mail_password` and `password` placeholders with the real values.
 
 ### Initialize the database
 
+*If you are on the paperspace machine, you can skip most of this section, and whatever you do **DO NOT RUN `make db-init`** as it will wipe a bunch of data from the database. You will just need to run `make db-stop` and then `make db-start` whenever you reboot the machine.*
+
+
 Run
 
 ```bash
-make db-start
+make db-start  # If this fails run `make db-stop` first and re-run
 ```
 
 to download the postgres docker image and start the database, then
 
 ```bash
-make db-init
+make db-init # DO NOT RUN THIS ON THE PAPERSPACE MACHINE
 ```
 
 to extract the general index data into the database.
