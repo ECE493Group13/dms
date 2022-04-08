@@ -45,6 +45,11 @@ export const DatasetListItem = ({
           </div>
         )}
         <Button
+          id={
+            isError || showLoadingIndicator
+              ? "trainButtonDisabled"
+              : "trainButton"
+          }
           buttonText={"Train"}
           disabled={isError || showLoadingIndicator}
           onClick={openHyperparameterAdjustmentForm}

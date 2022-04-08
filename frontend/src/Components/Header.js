@@ -11,10 +11,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
-export const Header = ({ showProfileIcon }) => {
+export const Header = ({ disableLogoClick, showProfileIcon }) => {
   const navigate = useNavigate();
 
   const openProfilePage = () => {
+    if (disableLogoClick) return;
     navigate("/profile");
   };
 
@@ -24,7 +25,15 @@ export const Header = ({ showProfileIcon }) => {
 
   return (
     <div className="dms-header flex-row-sb">
-      <p id="header" className="dms-header-title" onClick={routeHome}>
+      <p
+        id="header"
+        className={
+          disableLogoClick
+            ? "dms-header-title"
+            : "dms-header-title cursor-pointer"
+        }
+        onClick={routeHome}
+      >
         Data Mining System
       </p>
       {showProfileIcon && (

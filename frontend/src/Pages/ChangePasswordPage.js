@@ -65,6 +65,7 @@ export const ChangePasswordPage = () => {
           }
           throw new Error("HTTP status " + response.status);
         }
+        return response.json();
       })
       .then((json) => {
         if (json && json.token) {
@@ -79,7 +80,7 @@ export const ChangePasswordPage = () => {
 
   return (
     <div>
-      <Header></Header>
+      <Header disableLogoClick></Header>
       <div className="change-password-card-margin-top">
         <DoubleInputFormCard
           onInputChange={onInputChange}

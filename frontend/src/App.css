@@ -93,6 +93,9 @@ th {
   color: #63b9de;
   font-size: 22px;
   margin: 17px 15px;
+}
+
+.cursor-pointer {
   cursor: pointer;
 }
 
@@ -357,8 +360,9 @@ ul.dms-tab-navigator li.active {
   margin-top: 20px;
 }
 
-.logout-button {
-  margin: 20px 50%;
+.logout-button, .change-password-button {
+  margin: 20px;
+  text-align: center;
 }
 
 .analogy-test-form-container {
