@@ -4,6 +4,8 @@ The Data Mining System is an easy to use web-application which applies word2vec,
 
 For deployment instructions, see [Deployment.md](Deployment.md).
 
+The test plan can be found in [TestPlan.pdf](TestPlan.pdf).
+
 ## Subtrees
 
 Our project was developed as a number of git repositories which have been merged together using `git subtree`.
